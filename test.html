@@ -1,0 +1,397 @@
+<html lang="zh-CN"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>库存系统功能规格说明书</title> <style> * { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+background-color: #f5f7fa;
+color: #334155;
+line-height: 1.7;
+font-size: 14px;
+}
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 30px 20px;
+}
+/* 文档头部 */
+.doc-header {
+background: linear-gradient (135deg, #1e3a5f 0%, #2c5f7d 100%);
+color: white;
+padding: 40px 50px;
+border-radius: 8px 8px 0 0;
+margin-bottom: 2px;
+}
+.doc-header h1 {
+font-size: 28px;
+font-weight: 600;
+margin-bottom: 15px;
+letter-spacing: 1px;
+}
+.doc-header .meta {
+display: flex;
+flex-wrap: wrap;
+gap: 30px;
+font-size: 13px;
+opacity: 0.9;
+}
+.doc-header .meta span {
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.doc-header .meta strong {
+font-weight: 500;
+opacity: 0.8;
+}
+/* 修订历史表格 */
+.revision-section {
+background: white;
+padding: 25px 40px;
+margin-bottom: 20px;
+border-radius: 0 0 8px 8px;
+box-shadow: 0 1px 3px rgba (0,0,0,0.06);
+}
+.revision-section h3 {
+color: #1e3a5f;
+font-size: 16px;
+margin-bottom: 15px;
+padding-bottom: 8px;
+border-bottom: 2px solid #e2e8f0;
+}
+table {
+width: 100%;
+border-collapse: collapse;
+margin-bottom: 15px;
+font-size: 13px;
+}
+table th {
+background-color: #f1f5f9;
+color: #1e3a5f;
+font-weight: 600;
+text-align: left;
+padding: 12px 15px;
+border: 1px solid #e2e8f0;
+}
+table td {
+padding: 10px 15px;
+border: 1px solid #e2e8f0;
+vertical-align: top;
+}
+table tr:nth-child(even) {
+background-color: #f8fafc;
+}
+/* 目录 */
+.toc {
+background: white;
+padding: 25px 40px;
+margin-bottom: 20px;
+border-radius: 8px;
+box-shadow: 0 1px 3px rgba (0,0,0,0.06);
+}
+.toc h2 {
+color: #1e3a5f;
+font-size: 18px;
+margin-bottom: 15px;
+cursor: pointer;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.toc h2::after {
+content: "▼";
+font-size: 12px;
+transition: transform 0.3s;
+}
+.toc.collapsed h2::after {
+transform: rotate(-90deg);
+}
+.toc ul {
+list-style: none;
+padding-left: 0;
+}
+.toc.collapsed ul {
+display: none;
+}
+.toc li {
+padding: 6px 0;
+border-bottom: 1px dashed #e2e8f0;
+}
+.toc li:last-child {
+border-bottom: none;
+}
+.toc a {
+color: #475569;
+text-decoration: none;
+transition: color 0.2s;
+}
+.toc a:hover {
+color: #2c5f7d;
+}
+/* 章节通用样式 */
+.section {
+background: white;
+padding: 30px 40px;
+margin-bottom: 20px;
+border-radius: 8px;
+box-shadow: 0 1px 3px rgba (0,0,0,0.06);
+}
+.section-title {
+color: #1e3a5f;
+font-size: 20px;
+font-weight: 600;
+margin-bottom: 20px;
+padding-bottom: 10px;
+border-bottom: 2px solid #2c5f7d;
+cursor: pointer;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.section-title::after {
+content: "▼";
+font-size: 12px;
+color: #94a3b8;
+transition: transform 0.3s;
+}
+.section.collapsed .section-title::after {
+transform: rotate(-90deg);
+}
+.section.collapsed .section-content {
+display: none;
+}
+.subsection-title {
+color: #2c5f7d;
+font-size: 16px;
+font-weight: 600;
+margin: 20px 0 12px 0;
+}
+.section p {
+margin-bottom: 12px;
+text-align: justify;
+}
+/* 两栏卡片布局 - 范围 */
+.scope-container {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 20px;
+}
+.scope-card {
+background: #f8fafc;
+border: 1px solid #e2e8f0;
+border-radius: 6px;
+padding: 20px;
+}
+.scope-card h4 {
+color: #1e3a5f;
+font-size: 15px;
+margin-bottom: 12px;
+padding-bottom: 8px;
+border-bottom: 2px solid;
+}
+.scope-card.in-scope h4 {
+border-color: #059669;
+color: #065f46;
+}
+.scope-card.out-scope h4 {
+border-color: #dc2626;
+color: #991b1b;
+}
+.scope-card ul {
+padding-left: 20px;
+}
+.scope-card li {
+margin-bottom: 6px;
+font-size: 13px;
+}
+/* 架构图容器 */
+.architecture-diagram {
+background: #f8fafc;
+border: 1px solid #e2e8f0;
+border-radius: 6px;
+padding: 25px;
+margin: 20px 0;
+text-align: center;
+}
+.architecture-diagram svg {
+max-width: 100%;
+height: auto;
+}
+.diagram-caption {
+font-size: 12px;
+color: #64748b;
+margin-top: 10px;
+font-style: italic;
+}
+/* 功能模块卡片 */
+.module-cards {
+display: grid;
+grid-template-columns: repeat (auto-fit, minmax (350px, 1fr));
+gap: 20px;
+margin-top: 15px;
+}
+.module-card {
+background: #f8fafc;
+border: 1px solid #e2e8f0;
+border-radius: 6px;
+padding: 20px;
+border-top: 3px solid #2c5f7d;
+}
+.module-card h4 {
+color: #1e3a5f;
+font-size: 15px;
+margin-bottom: 10px;
+}
+.module-card .module-desc {
+font-size: 13px;
+color: #475569;
+margin-bottom: 12px;
+padding-bottom: 10px;
+border-bottom: 1px dashed #e2e8f0;
+}
+.module-card .field {
+margin-bottom: 8px;
+font-size: 13px;
+}
+.module-card .field strong {
+color: #2c5f7d;
+display: inline-block;
+min-width: 70px;
+}
+.module-card .field ul {
+padding-left: 20px;
+margin-top: 4px;
+}
+/* 接口表格 */
+.interface-table {
+font-size: 12px;
+}
+/* 异常处理 */
+.error-list {
+list-style: none;
+padding-left: 0;
+}
+.error-list li {
+padding: 12px 15px;
+border-left: 3px solid #dc2626;
+background: #fef2f2;
+margin-bottom: 10px;
+border-radius: 0 4px 4px 0;
+}
+.error-list li .error-code {
+font-weight: 600;
+color: #991b1b;
+}
+/* NFR 卡片 */
+.nfr-grid {
+display: grid;
+grid-template-columns: repeat (2, 1fr);
+gap: 15px;
+}
+.nfr-card {
+background: #f8fafc;
+border: 1px solid #e2e8f0;
+border-radius: 6px;
+padding: 18px;
+}
+.nfr-card h4 {
+color: #1e3a5f;
+font-size: 14px;
+margin-bottom: 10px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.nfr-card h4::before {
+content: "";
+width: 4px;
+height: 16px;
+background: #2c5f7d;
+border-radius: 2px;
+}
+.nfr-card ul {
+padding-left: 18px;
+font-size: 13px;
+}
+.nfr-card li {
+margin-bottom: 4px;
+}
+/* 附录 */
+.appendix-item {
+padding: 10px 0;
+border-bottom: 1px dashed #e2e8f0;
+}
+.appendix-item:last-child {
+border-bottom: none;
+}
+.appendix-item strong {
+color: #2c5f7d;
+}
+/* 回到顶部 */
+.back-to-top {
+position: fixed;
+bottom: 30px;
+right: 30px;
+width: 45px;
+height: 45px;
+background: #1e3a5f;
+color: white;
+border: none;
+border-radius: 50%;
+cursor: pointer;
+font-size: 18px;
+display: flex;
+align-items: center;
+justify-content: center;
+opacity: 0.8;
+transition: opacity 0.2s;
+z-index: 100;
+}
+.back-to-top:hover {
+opacity: 1;
+}
+/* 待补充标记 */
+.todo {
+color: #d97706;
+background: #fef3c7;
+padding: 2px 6px;
+border-radius: 3px;
+font-size: 12px;
+font-weight: 500;
+}
+/* 标签样式 */
+.tag {
+display: inline-block;
+padding: 2px 8px;
+border-radius: 3px;
+font-size: 11px;
+font-weight: 500;
+margin-right: 4px;
+}
+.tag-primary {
+background: #dbeafe;
+color: #1e40af;
+}
+.tag-success {
+background: #dcfce7;
+color: #166534;
+}
+.tag-warning {
+background: #fef3c7;
+color: #92400e;
+}
+@media (max-width: 768px) {
+.scope-container, .nfr-grid, .module-cards {
+grid-template-columns: 1fr;
+}
+.doc-header {
+padding: 25px 20px;
+}
+.section, .revision-section, .toc {
+padding: 20px;
+}
+.container {
+padding: 15px 10px;
+}
+}
+</style>
+</head> <body> <div class="container"> <!-- 文档头部 --> <div class="doc-header"> <h1>库存系统功能规格说明书</h1> <div class="meta"> <span><strong>文档编号：</strong>INV-FS-2026-001</span> <span><strong>版本号：</strong>V1.0</span> <span><strong>作者：</strong>IT架构设计部</span> <span><strong>日期：</strong>2026-09-23</span> <span><strong>受众：</strong>业务方、开发团队、测试团队、运维团队</span> </div> </div> <div class="revision-section"> <h3>修订历史</h3> <table> <thead> <tr> <th>版本号</th> <th>修订日期</th> <th>修订人</th> <th>修订内容</th> <th>审批人</th> </tr> </thead> <tbody> <tr> <td>V1.0</td> <td>2026-09-23</td> <td>架构设计部</td> <td>初始版本，完成整体架构设计与功能规格定义</td> <td><span class="todo">待补充</span></td> </tr> </tbody> </table> </div> <div class="toc" id="toc"> <h2 onclick="toggleSection('toc')">目 录</h2> <ul> <li><a href="#section1">1. 简介</a></li> <li><a href="#section2">2. 范围</a></li> <li><a href="#section3">3. 总体架构</a></li> <li><a href="#section4">4. 业务流程</a></li> <li><a href="#section5">5. 功能模块详细规格</a></li> <li><a href="#section6">6. 接口规格</a></li> <li><a href="#section7">7. 异常与错误处理</a></li> <li><a href="#section8">8. 非功能需求（NFR）</a></li> <li><a href="#section9">9. 依赖与约束</a></li> <li><a href="#section10">10. 附录</a></li> </ul> </div> <div class="section" id="section1"> <div class="section-title" onclick="toggleSection('section1')">1. 简介</div> <div class="section-content"> <h3 class="subsection-title">1.1 业务目标</h3> <p>本库存系统旨在构建一套分层架构的企业级库存管理体系，采用"三层库存架构"模式，实现全渠道库存共享、防超卖机制和库存精准调度。通过统一的库存中枢管理，打通线上线下销售渠道与物理仓库之间的数据链路，保障库存数据的实时性、准确性和一致性，支撑智能分仓、就近发货等业务策略，最终提升库存周转效率、降低运营成本、改善客户体验。</p> <h3 class="subsection-title">1.2 项目背景</h3> <p>随着业务规模扩张和全渠道销售战略的推进，现有库存管理模式面临以下核心挑战：</p> <ul style="padding-left: 25px; margin-bottom: 12px;"> <li>多渠道库存分散管理，无法实现全局库存共享与统一调度，易出现部分渠道超卖、部分渠道库存积压的现象</li> <li>销售端与仓储端库存数据不同步，实物库存与系统账面存在差异，导致订单履约风险</li> <li>缺乏在途库存、预占库存等多维度库存状态管理，无法支撑精细化库存运营</li> <li>跨系统集成能力薄弱，ERP、OMS、TMS等系统间数据协同效率低下</li> </ul> <p>为解决上述问题，启动新一代库存系统建设项目，采用分层架构设计理念，构建销售层、调度层、仓库层三级库存体系，配套完整的技术分层架构，支撑企业未来3-5年的业务发展需求。</p> </div> </div> <div class="section" id="section2"> <div class="section-title" onclick="toggleSection('section2')">2. 范围</div> <div class="section-content"> <div class="scope-container"> <div class="scope-card in-scope"> <h4>✓ In Scope（范围内）</h4> <ul> <li>销售层：渠道库存分配、预占释放、活动库存预留、实时可售库存查询</li> <li>调度层：全局库存汇总、在途库存管理、可用实物库存管理、销售预占库存管理、智能分仓策略</li> <li>仓库层：WMS系统对接、货主管理、批号管理、库位管理、库存状态管理、入库/拣货/出库作业驱动</li> <li>展示层：Web管理端、PDA手持操作终端、移动端小程序</li> <li>业务层：入库、出库、调拨、盘点、预警等核心业务逻辑及规则引擎</li> <li>数据层：库存单据、SKU主数据、操作日志的存储与管理</li> <li>集成层：ERP系统对接、OMS订单系统对接、TMS运输系统对接</li> <li>全渠道库存共享机制与防超卖控制</li> </ul> </div> <div class="scope-card out-scope"> <h4>✗ Out of Scope（范围外）</h4> <ul> <li>采购管理与供应商管理功能（属ERP系统范畴）</li> <li>财务核算与成本管理（属财务系统范畴）</li> <li>订单履约全流程管理（属OMS系统范畴）</li> <li>运输配送路径优化（属TMS系统范畴）</li> <li>商品主数据全生命周期管理（属MDM系统范畴）</li> <li>线下门店POS收银功能</li> <li>仓储自动化设备（AGV、分拣机等）的直接控制</li> <li>第三方电商平台店铺运营管理</li> </ul> </div> </div> </div> </div> <div class="section" id="section3"> <div class="section-title" onclick="toggleSection('section3')">3. 总体架构</div> <div class="section-content"> <h3 class="subsection-title">3.1 架构描述</h3> <p>本库存系统采用分层设计理念，从业务逻辑维度划分为<strong>销售层、调度层、仓库层</strong>三层库存架构，实现全渠道库存共享与精准调度；从技术实现维度划分为<strong>展示层、业务层、数据层、集成层</strong>四层技术架构，保障系统的可扩展性与可维护性。</p> <p>业务三层架构自上而下形成"销售可售库存-调度中心库存-仓库实物库存"的三级库存体系，通过库存预占、实时同步、状态联动等机制，确保各层级库存数据的一致性，从源头避免超卖问题，同时支撑"一盘货"全局调度策略。</p> <h3 class="subsection-title">3.2 三层库存架构图</h3> <div class="architecture-diagram"> <svg width="900" height="420" viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg"> <!-- 销售层 --> <rect x="50" y="30" width="800" height="90" rx="8" fill="#dbeafe" stroke="#1e40af" stroke-width="2"/> <text x="90" y="60" font-size="16" font-weight="bold" fill="#1e40af">销售层（Sales Layer）</text> <text x="90" y="82" font-size="12" fill="#334155">对接全渠道销售，提供实时可售库存查询，管理渠道分配、预占释放、活动预留</text> <rect x="120" y="95" width="130" height="35" rx="4" fill="#93c5fd" stroke="#1e40af" stroke-width="1"/> <text x="185" y="118" text-anchor="middle" font-size="12" fill="#1e3a8a">渠道库存分配</text> <rect x="270" y="95" width="130" height="35" rx="4" fill="#93c5fd" stroke="#1e40af" stroke-width="1"/> <text x="335" y="118" text-anchor="middle" font-size="12" fill="#1e3a8a">预占与释放</text> <rect x="420" y="95" width="130" height="35" rx="4" fill="#93c5fd" stroke="#1e40af" stroke-width="1"/> <text x="485" y="118" text-anchor="middle" font-size="12" fill="#1e3a8a">活动库存预留</text> <rect x="570" y="95" width="130" height="35" rx="4" fill="#93c5fd" stroke="#1e40af" stroke-width="1"/> <text x="635" y="118" text-anchor="middle" font-size="12" fill="#1e3a8a">可售库存查询</text> <line x1="450" y1="120" x2="450" y2="145" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/> <text x="460" y="138" font-size="10" fill="#64748b">库存预占 / 扣减</text> <rect x="50" y="150" width="800" height="100" rx="8" fill="#dcfce7" stroke="#166534" stroke-width="2"/> <text x="90" y="180" font-size="16" font-weight="bold" fill="#166534">调度层（Dispatch Layer）- 库存中枢</text> <text x="90" y="202" font-size="12" fill="#334155">汇总各仓库实物库存，统一管理在途、可用、预占库存，实现"一盘货"全局调度</text> <rect x="100" y="215" width="120" height="30" rx="4" fill="#86efac" stroke="#166534" stroke-width="1"/> <text x="160" y="235" text-anchor="middle" font-size="11" fill="#14532d">全局库存汇总</text> <rect x="240" y="215" width="120" height="30" rx="4" fill="#86efac" stroke="#166534" stroke-width="1"/> <text x="300" y="235" text-anchor="middle" font-size="11" fill="#14532d">在途库存管理</text> <rect x="380" y="215" width="120" height="30" rx="4" fill="#86efac" stroke="#166534" stroke-width="1"/> <text x="440" y="235" text-anchor="middle" font-size="11" fill="#14532d">可用实物库存</text> <rect x="520" y="215" width="120" height="30" rx="4" fill="#86efac" stroke="#166534" stroke-width="1"/> <text x="580" y="235" text-anchor="middle" font-size="11" fill="#14532d">销售预占库存</text> <rect x="660" y="215" width="120" height="30" rx="4" fill="#86efac" stroke="#166534" stroke-width="1"/> <text x="720" y="235" text-anchor="middle" font-size="11" fill="#14532d">智能分仓策略</text> <line x1="450" y1="250" x2="450" y2="275" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/> <text x="460" y="268" font-size="10" fill="#64748b">出入库指令 / 库存同步</text> <rect x="50" y="280" width="800" height="110" rx="8" fill="#fef3c7" stroke="#92400e" stroke-width="2"/> <text x="90" y="310" font-size="16" font-weight="bold" fill="#92400e">仓库层（Warehouse Layer）</text> <text x="90" y="332" font-size="12" fill="#334155">通过WMS管理物理仓库细粒度库存，覆盖货主、批号、库位、状态，驱动仓储作业</text> <rect x="80" y="345" width="100" height="30" rx="4" fill="#fcd34d" stroke="#92400e" stroke-width="1"/> <text x="130" y="365" text-anchor="middle" font-size="11" fill="#78350f">WMS系统对接</text> <rect x="200" y="345" width="100" height="30" rx="4" fill="#fcd34d" stroke="#92400e" stroke-width="1"/> <text x="250" y="365" text-anchor="middle" font-size="11" fill="#78350f">货主/批号管理</text> <rect x="320" y="345" width="100" height="30" rx="4" fill="#fcd34d" stroke="#92400e" stroke-width="1"/> <text x="370" y="365" text-anchor="middle" font-size="11" fill="#78350f">库位管理</text> <rect x="440" y="345" width="100" height="30" rx="4" fill="#fcd34d" stroke="#92400e" stroke-width="1"/> <text x="490" y="365" text-anchor="middle" font-size="11" fill="#78350f">库存状态</text> <rect x="560" y="345" width="100" height="30" rx="4" fill="#fcd34d" stroke="#92400e" stroke-width="1"/> <text x="610" y="365" text-anchor="middle" font-size="11" fill="#78350f">入库作业</text> <rect x="680" y="345" width="100" height="30" rx="4" fill="#fcd34d" stroke="#92400e" stroke-width="1"/> <text x="730" y="365" text-anchor="middle" font-size="11" fill="#78350f">拣货出库</text> <defs> <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"> <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/> </marker> </defs> </svg> <div class="diagram-caption">图3-1 三层库存业务架构图</div> </div> <h3 class="subsection-title">3.3 技术分层架构图</h3> <div class="architecture-diagram"> <svg width="900" height="380" viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg"> <!-- 展示层 --> <rect x="50" y="20" width="800" height="70" rx="8" fill="#f1f5f9" stroke="#475569" stroke-width="2"/> <text x="450" y="45" text-anchor="middle" font-size="15" font-weight="bold" fill="#334155">展示层（Presentation Layer）</text> <rect x="150" y="55" width="140" height="28" rx="4" fill="#e2e8f0" stroke="#64748b" stroke-width="1"/> <text x="220" y="73" text-anchor="middle" font-size="12" fill="#334155">Web 管理端</text> <rect x="320" y="55" width="140" height="28" rx="4" fill="#e2e8f0" stroke="#64748b" stroke-width="1"/> <text x="390" y="73" text-anchor="middle" font-size="12" fill="#334155">PDA 手持终端</text> <rect x="490" y="55" width="140" height="28" rx="4" fill="#e2e8f0" stroke="#64748b" stroke-width="1"/> <text x="560" y="73" text-anchor="middle" font-size="12" fill="#334155">移动端小程序</text> <line x1="450" y1="90" x2="450" y2="110" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,2"/> <rect x="50" y="115" width="800" height="80" rx="8" fill="#e0f2fe" stroke="#0369a1" stroke-width="2"/> <text x="450" y="140" text-anchor="middle" font-size="15" font-weight="bold" fill="#0c4a6e">业务层（Business Layer）</text> <text x="450" y="158" text-anchor="middle" font-size="11" fill="#334155">内置规则引擎，灵活适配不同企业流程需求</text> <rect x="80" y="165" width="90" height="24" rx="3" fill="#bae6fd" stroke="#0284c7" stroke-width="1"/> <text x="125" y="181" text-anchor="middle" font-size="11" fill="#0c4a6e">入库管理</text> <rect x="185" y="165" width="90" height="24" rx="3" fill="#bae6fd" stroke="#0284c7" stroke-width="1"/> <text x="230" y="181" text-anchor="middle" font-size="11" fill="#0c4a6e">出库管理</text> <rect x="290" y="165" width="90" height="24" rx="3" fill="#bae6fd" stroke="#0284c7" stroke-width="1"/> <text x="335" y="181" text-anchor="middle" font-size="11" fill="#0c4a6e">调拨管理</text> <rect x="395" y="165" width="90" height="24" rx="3" fill="#bae6fd" stroke="#0284c7" stroke-width="1"/> <text x="440" y="181" text-anchor="middle" font-size="11" fill="#0c4a6e">盘点管理</text> <rect x="500" y="165" width="90" height="24" rx="3" fill="#bae6fd" stroke="#0284c7" stroke-width="1"/> <text x="545" y="181" text-anchor="middle" font-size="11" fill="#0c4a6e">库存预警</text> <rect x="605" y="165" width="110" height="24" rx="3" fill="#bae6fd" stroke="#0284c7" stroke-width="1"/> <text x="660" y="181" text-anchor="middle" font-size="11" fill="#0c4a6e">规则引擎</text> <rect x="730" y="165" width="90" height="24" rx="3" fill="#bae6fd" stroke="#0284c7" stroke-width="1"/> <text x="775" y="181" text-anchor="middle" font-size="11" fill="#0c4a6e">...</text> <line x1="450" y1="195" x2="450" y2="215" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,2"/> <rect x="50" y="220" width="800" height="65" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/> <text x="450" y="245" text-anchor="middle" font-size="15" font-weight="bold" fill="#166534">数据层（Data Layer）</text> <rect x="180" y="252" width="130" height="25" rx="3" fill="#bbf7d0" stroke="#22c55e" stroke-width="1"/> <text x="245" y="269" text-anchor="middle" font-size="11" fill="#166534">数据库（库存单据/SKU）</text> <rect x="335" y="252" width="130" height="25" rx="3" fill="#bbf7d0" stroke="#22c55e" stroke-width="1"/> <text x="400" y="269" text-anchor="middle" font-size="11" fill="#166534">缓存系统（实时库存）</text> <rect x="490" y="252" width="130" height="25" rx="3" fill="#bbf7d0" stroke="#22c55e" stroke-width="1"/> <text x="555" y="269" text-anchor="middle" font-size="11" fill="#166534">操作日志</text> <line x1="450" y1="285" x2="450" y2="305" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,2"/> <rect x="50" y="310" width="800" height="60" rx="8" fill="#faf5ff" stroke="#9333ea" stroke-width="2"/> <text x="450" y="335" text-anchor="middle" font-size="15" font-weight="bold" fill="#6b21a8">集成层（Integration Layer）</text> <rect x="200" y="342" width="100" height="22" rx="3" fill="#e9d5ff" stroke="#a855f7" stroke-width="1"/> <text x="250" y="357" text-anchor="middle" font-size="11" fill="#6b21a8">ERP 系统</text> <rect x="325" y="342" width="100" height="22" rx="3" fill="#e9d5ff" stroke="#a855f7" stroke-width="1"/> <text x="375" y="357" text-anchor="middle" font-size="11" fill="#6b21a8">OMS 订单系统</text> <rect x="450" y="342" width="100" height="22" rx="3" fill="#e9d5ff" stroke="#a855f7" stroke-width="1"/> <text x="500" y="357" text-anchor="middle" font-size="11" fill="#6b21a8">TMS 运输系统</text> <rect x="575" y="342" width="100" height="22" rx="3" fill="#e9d5ff" stroke="#a855f7" stroke-width="1"/> <text x="625" y="357" text-anchor="middle" font-size="11" fill="#6b21a8">其他系统</text> </svg> <div class="diagram-caption">图3-2 技术分层架构图</div> </div> </div> </div> <div class="section" id="section4"> <div class="section-title" onclick="toggleSection('section4')">4. 业务流程</div> <div class="section-content"> <h3 class="subsection-title">4.1 核心业务流程描述</h3> <p>库存系统核心业务流程围绕"订单扣减-库存预占-仓储作业-实物出库"的主线展开，贯穿销售层、调度层、仓库层三个层级，确保每一笔库存变动都有迹可循、账实一致。主要流程包括：</p> <ul style="padding-left: 25px; margin-bottom: 15px;"> <li><strong>库存查询与预占流程</strong>：销售渠道发起可售库存查询，销售层基于调度层同步的可用库存计算可售量；订单创建时触发库存预占，扣减对应渠道的可售库存，同时在调度层增加预占库存标记。</li> <li><strong>出库履约流程</strong>：订单审核通过后，调度层根据智能分仓策略指定发货仓库，向仓库层WMS下发出库指令；WMS执行拣货、复核、出库作业后，回传出库确认，调度层扣减实物库存并释放预占。</li> <li><strong>入库作业流程</strong>：采购到货或退货入库时，WMS执行收货、质检、上架作业，完成后同步至调度层增加可用库存；调度层更新全局库存数据，并同步至销售层释放对应可售库存。</li> <li><strong>库存调拨流程</strong>：根据库存分布与销售预测，调度层发起仓库间调拨指令，调出仓库执行出库，调入仓库执行入库，在途库存全程跟踪，到货后转为可用库存。</li> <li><strong>库存盘点流程</strong>：定期或不定期发起盘点任务，WMS执行实物盘点，产生盘盈盘亏差异，经审批后调整系统库存，确保账实相符。</li> </ul> <h3 class="subsection-title">4.2 订单库存扣减流程图</h3> <div class="architecture-diagram"> <svg width="850" height="480" viewBox="0 0 850 480" xmlns="http://www.w3.org/2000/svg"> <!-- 泳道线 --> <line x1="0" y1="50" x2="850" y2="50" stroke="#cbd5e1" stroke-width="1"/> <line x1="280" y1="0" x2="280" y2="480" stroke="#cbd5e1" stroke-width="1"/> <line x1="560" y1="0" x2="560" y2="480" stroke="#cbd5e1" stroke-width="1"/> <rect x="0" y="0" width="280" height="50" fill="#f1f5f9"/> <text x="140" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#334155">销售层 / 前端渠道</text> <rect x="280" y="0" width="280" height="50" fill="#f1f5f9"/> <text x="420" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#334155">调度层 / 库存中枢</text> <rect x="560" y="0" width="290" height="50" fill="#f1f5f9"/> <text x="705" y="30" text-anchor="middle" font-size="13" font-weight="bold" fill="#334155">仓库层 / WMS</text> <rect x="70" y="70" width="140" height="40" rx="4" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/> <text x="140" y="95" text-anchor="middle" font-size="12" fill="#1e3a8a">发起可售库存查询</text> <line x1="140" y1="110" x2="140" y2="130" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="70" y="135" width="140" height="40" rx="4" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/> <text x="140" y="160" text-anchor="middle" font-size="12" fill="#1e3a8a">创建订单</text> <line x1="140" y1="175" x2="140" y2="195" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="70" y="200" width="140" height="40" rx="4" fill="#dbeafe" stroke="#1e40af" stroke-width="1.5"/> <text x="140" y="225" text-anchor="middle" font-size="12" fill="#1e3a8a">扣减渠道可售库存</text> <line x1="140" y1="240" x2="140" y2="280" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="70" y="285" width="140" height="40" rx="4" fill="#dcfce7" stroke="#166534" stroke-width="1.5"/> <text x="140" y="310" text-anchor="middle" font-size="12" fill="#166534">订单履约完成</text> <line x1="210" y1="90" x2="350" y2="90" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="350" y="70" width="140" height="40" rx="4" fill="#dcfce7" stroke="#166534" stroke-width="1.5"/> <text x="420" y="95" text-anchor="middle" font-size="12" fill="#166534">计算可用库存</text> <line x1="350" y1="105" x2="210" y2="105" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4,2"/> <polygon points="210,105 217,101 217,109" fill="#64748b"/> <line x1="210" y1="220" x2="350" y2="220" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="350" y="200" width="140" height="40" rx="4" fill="#dcfce7" stroke="#166534" stroke-width="1.5"/> <text x="420" y="225" text-anchor="middle" font-size="12" fill="#166534">增加销售预占库存</text> <line x1="420" y1="240" x2="420" y2="270" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="350" y="275" width="140" height="40" rx="4" fill="#dcfce7" stroke="#166534" stroke-width="1.5"/> <text x="420" y="300" text-anchor="middle" font-size="12" fill="#166534">智能分仓指派</text> <line x1="420" y1="315" x2="420" y2="345" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="350" y="350" width="140" height="40" rx="4" fill="#dcfce7" stroke="#166534" stroke-width="1.5"/> <text x="420" y="375" text-anchor="middle" font-size="12" fill="#166534">扣减实物库存</text> <line x1="420" y1="390" x2="420" y2="420" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="350" y="425" width="140" height="40" rx="4" fill="#fef3c7" stroke="#92400e" stroke-width="1.5"/> <text x="420" y="450" text-anchor="middle" font-size="12" fill="#92400e">释放预占库存</text> <line x1="490" y1="295" x2="630" y2="295" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="630" y="275" width="140" height="40" rx="4" fill="#fef3c7" stroke="#92400e" stroke-width="1.5"/> <text x="700" y="300" text-anchor="middle" font-size="12" fill="#92400e">接收出库指令</text> <line x1="700" y1="315" x2="700" y2="345" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="630" y="350" width="140" height="40" rx="4" fill="#fef3c7" stroke="#92400e" stroke-width="1.5"/> <text x="700" y="375" text-anchor="middle" font-size="12" fill="#92400e">拣货 / 复核作业</text> <line x1="700" y1="390" x2="700" y2="420" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow-blue)"/> <rect x="630" y="425" width="140" height="40" rx="4" fill="#fef3c7" stroke="#92400e" stroke-width="1.5"/> <text x="700" y="450" text-anchor="middle" font-size="12" fill="#92400e">确认出库</text> <line x1="630" y1="445" x2="490" y2="445" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4,2"/> <polygon points="490,445 497,441 497,449" fill="#64748b"/> <defs> <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"> <polygon points="0 0, 8 3, 0 6" fill="#64748b"/> </marker> </defs> </svg> <div class="diagram-caption">图4-1 订单库存扣减核心流程图</div> </div> </div> </div> <div class="section" id="section5"> <div class="section-title" onclick="toggleSection('section5')">5. 功能模块详细规格</div> <div class="section-content"> <h3 class="subsection-title">5.1 销售层模块</h3> <div class="module-cards"> <div class="module-card"> <h4>5.1.1 渠道库存分配管理</h4> <div class="module-desc">管理各销售渠道的库存配额，支持按比例分配、固定配额、动态分配等多种策略，保障重点渠道库存供给。</div> <div class="field"><strong>输入：</strong>渠道编码、SKU编码、分配数量、分配策略、生效时间</div> <div class="field"><strong>输出：</strong>渠道库存配额结果、分配日志</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>分配总量不得超过调度层可用库存上限</li> <li>支持按日/周/月维度设置分配周期</li> <li>渠道间库存可人工调剂，需记录审批痕迹</li> </ul> </div> </div> <div class="module-card"> <h4>5.1.2 库存预占与释放</h4> <div class="module-desc">订单创建时预占对应渠道库存，订单取消/超时未支付时自动释放库存，防止超卖。</div> <div class="field"><strong>输入：</strong>订单号、SKU编码、预占数量、渠道编码、预占有效期</div> <div class="field"><strong>输出：</strong>预占结果（成功/失败）、预占流水号</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>可售库存不足时，预占失败并返回具体缺口数量</li> <li>预占超时未确认自动释放，超时时间可配置</li> <li>支持批量预占与批量释放</li> </ul> </div> </div> <div class="module-card"> <h4>5.1.3 活动库存预留</h4> <div class="module-desc">针对大促、秒杀等营销活动，单独预留活动专属库存，与常规渠道库存隔离管理。</div> <div class="field"><strong>输入：</strong>活动ID、SKU编码、预留数量、活动时间段</div> <div class="field"><strong>输出：</strong>活动库存池、预留确认单</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>活动库存从对应渠道总配额中扣除</li> <li>活动结束后未售完库存自动回流渠道可用库存</li> <li>支持活动级别的超卖控制参数配置</li> </ul> </div> </div> <div class="module-card"> <h4>5.1.4 实时可售库存查询</h4> <div class="module-desc">为前端销售平台提供毫秒级可售库存查询服务，支持单查、批量查、分页查。</div> <div class="field"><strong>输入：</strong>SKU编码列表、渠道编码、仓库范围（可选）</div> <div class="field"><strong>输出：</strong>各SKU可售库存数量、预计发货仓库</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>查询结果包含可用库存与预占中库存明细</li> <li>高并发场景下支持降级返回近似值</li> <li>查询响应时间需满足性能指标要求</li> </ul> </div> </div> </div> <h3 class="subsection-title">5.2 调度层模块</h3> <div class="module-cards"> <div class="module-card"> <h4>5.2.1 全局库存汇总</h4> <div class="module-desc">汇总各仓库、各状态的库存数据，形成全局库存视图，作为库存调度与决策的依据。</div> <div class="field"><strong>输入：</strong>各仓库库存数据、在途单据数据</div> <div class="field"><strong>输出：</strong>全局库存汇总表、库存分布视图</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>按SKU+仓库+状态维度汇总库存数量</li> <li>支持按货主、批号、效期等维度下钻</li> <li>数据实时同步，延迟不超过设定阈值</li> </ul> </div> </div> <div class="module-card"> <h4>5.2.2 在途库存管理</h4> <div class="module-desc">管理采购在途、调拨在途、退货在途等各类在途库存，全程跟踪物流状态。</div> <div class="field"><strong>输入：</strong>在途单据号、SKU、数量、预计到货时间、运输单号</div> <div class="field"><strong>输出：</strong>在途库存台账、预计到货预告</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>在途库存计入可用库存的比例可配置</li> <li>支持在途异常预警与跟催</li> <li>到货入库后自动核销在途库存</li> </ul> </div> </div> <div class="module-card"> <h4>5.2.3 智能分仓策略</h4> <div class="module-desc">根据订单收货地址、各仓库存情况、配送时效等因素，自动选择最优发货仓库。</div> <div class="field"><strong>输入：</strong>收货地址、SKU清单、订单类型、时效要求</div> <div class="field"><strong>输出：</strong>推荐发货仓库、分仓结果明细</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>优先匹配有库存且距离最近的仓库</li> <li>支持按区域、渠道、客户等级配置分仓优先级</li> <li>单仓不足时支持拆单分仓发货</li> </ul> </div> </div> <div class="module-card"> <h4>5.2.4 库存调拨管理</h4> <div class="module-desc">发起仓库间的库存调拨，平衡各仓库存分布，支撑全局库存优化。</div> <div class="field"><strong>输入：</strong>调出仓、调入仓、SKU清单、调拨数量、调拨原因</div> <div class="field"><strong>输出：</strong>调拨单、在途库存记录、入库核销单</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>调拨出库后库存转为在途状态</li> <li>调入入库后核销在途并增加可用库存</li> <li>支持调拨差异处理与损耗记录</li> </ul> </div> </div> </div> <h3 class="subsection-title">5.3 仓库层模块</h3> <div class="module-cards"> <div class="module-card"> <h4>5.3.1 入库作业管理</h4> <div class="module-desc">驱动WMS执行采购入库、调拨入库、退货入库等各类入库作业，确保实物准确上架。</div> <div class="field"><strong>输入：</strong>入库通知单、货主信息、SKU明细、批号/效期</div> <div class="field"><strong>输出：</strong>入库确认单、库位分配结果、上架记录</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>支持收货、质检、上架三步入库流程</li> <li>批号、效期、序列号等属性必须准确采集</li> <li>入库差异需登记并走审批流程</li> </ul> </div> </div> <div class="module-card"> <h4>5.3.2 出库拣货管理</h4> <div class="module-desc">根据出库指令生成拣货任务，驱动仓内拣货、复核、打包、发货全流程。</div> <div class="field"><strong>输入：</strong>出库指令、波次规则、拣货策略</div> <div class="field"><strong>输出：</strong>拣货单、出库确认、打包明细</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>支持按波次汇总拣货，提升作业效率</li> <li>先进先出（FIFO）、近效期先出等策略可选</li> <li>出库复核确保实物与单据一致</li> </ul> </div> </div> <div class="module-card"> <h4>5.3.3 库位与状态管理</h4> <div class="module-desc">管理仓库内货位精细化库存，记录库存状态（可用、冻结、质检、残次等）。</div> <div class="field"><strong>输入：</strong>库位编码、SKU、数量、库存状态、操作类型</div> <div class="field"><strong>输出：</strong>库位库存台账、状态变更记录</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>库存状态变更需有明确的业务单据支撑</li> <li>冻结库存不计入可用库存</li> <li>支持库位间移库作业</li> </ul> </div> </div> <div class="module-card"> <h4>5.3.4 库存盘点管理</h4> <div class="module-desc">支持周期盘点、循环盘点、异动盘点等多种盘点方式，确保账实一致。</div> <div class="field"><strong>输入：</strong>盘点范围、盘点方式、盘点人</div> <div class="field"><strong>输出：</strong>盘点单、差异报表、盘盈盘亏调整单</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>盘点期间对应库存冻结，禁止出入库</li> <li>差异需经审批后方可调整系统库存</li> <li>支持盲盘、明盘两种盘点模式</li> </ul> </div> </div> </div> <h3 class="subsection-title">5.4 业务层公共模块</h3> <div class="module-cards"> <div class="module-card"> <h4>5.4.1 规则引擎</h4> <div class="module-desc">提供可配置的业务规则引擎，支持库存分配规则、分仓规则、预警规则等灵活配置。</div> <div class="field"><strong>输入：</strong>规则条件、规则动作、优先级</div> <div class="field"><strong>输出：</strong>规则配置结果、规则执行日志</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>规则支持版本管理与灰度发布</li> <li>规则执行异常不影响主流程，支持降级</li> <li>规则变更需审批并记录操作日志</li> </ul> </div> </div> <div class="module-card"> <h4>5.4.2 库存预警</h4> <div class="module-desc">基于库存阈值、效期、周转率等指标，自动触发库存预警通知。</div> <div class="field"><strong>输入：</strong>预警指标、阈值配置、通知对象</div> <div class="field"><strong>输出：</strong>预警消息、预警报表</div> <div class="field"> <strong>业务规则：</strong> <ul> <li>支持库存上下限、效期预警、呆滞库存预警</li> <li>预警级别分高/中/低三级，对应不同通知方式</li> <li>同一预警去重，避免重复告警</li> </ul> </div> </div> </div> </div> </div> <div class="section" id="section6"> <div class="section-title" onclick="toggleSection('section6')">6. 接口规格</div> <div class="section-content"> <p>以下为库存系统对外提供的核心接口清单，详细接口定义参见单独的《接口规格说明书》。</p> <h3 class="subsection-title">6.1 对外服务接口清单</h3> <table class="interface-table"> <thead> <tr> <th width="8%">接口编号</th> <th width="18%">接口名称</th> <th width="10%">接口类型</th> <th width="12%">调用方</th> <th width="25%">功能描述</th> <th width="10%">方式</th> <th width="17%">备注</th> </tr> </thead> <tbody> <tr> <td>INV-API-001</td> <td>可售库存查询</td> <td>查询类</td> <td>OMS、电商平台</td> <td>批量查询指定SKU在指定渠道的可售库存数量</td> <td>REST API</td> <td>高并发，毫秒级响应</td> </tr> <tr> <td>INV-API-002</td> <td>库存预占</td> <td>交易类</td> <td>OMS订单系统</td> <td>订单创建时预占对应渠道库存，返回预占结果</td> <td>REST API</td> <td>支持幂等调用</td> </tr> <tr> <td>INV-API-003</td> <td>库存释放</td> <td>交易类</td> <td>OMS订单系统</td> <td>订单取消或关闭时，释放对应预占库存</td> <td>REST API</td> <td>支持幂等调用</td> </tr> <tr> <td>INV-API-004</td> <td>库存扣减确认</td> <td>交易类</td> <td>OMS订单系统</td> <td>订单审核通过后，正式扣减库存并下发出库指令</td> <td>REST API</td> <td>触发WMS出库流程</td> </tr> <tr> <td>INV-API-005</td> <td>全局库存查询</td> <td>查询类</td> <td>ERP、BI系统</td> <td>查询各仓库各状态库存汇总数据</td> <td>REST API</td> <td>内部管理用</td> </tr> <tr> <td>INV-API-006</td> <td>入库单创建</td> <td>交易类</td> <td>ERP采购系统</td> <td>采购入库通知单下发，创建入库任务</td> <td>REST API</td> <td>支持异步回执</td> </tr> <tr> <td>INV-API-007</td> <td>库存调拨发起</td> <td>交易类</td> <td>ERP、运营平台</td> <td>发起仓库间库存调拨指令</td> <td>REST API</td> <td>需审批流</td> </tr> </tbody> </table> <h3 class="subsection-title">6.2 系统集成接口清单</h3> <table class="interface-table"> <thead> <tr> <th width="8%">接口编号</th> <th width="18%">接口名称</th> <th width="12%">对接系统</th> <th width="10%">方向</th> <th width="30%">功能描述</th> <th width="10%">方式</th> <th width="12%">备注</th> </tr> </thead> <tbody> <tr> <td>INV-INT-001</td> <td>WMS入库回执</td> <td>WMS系统</td> <td>入站</td> <td>WMS完成入库作业后，回传入库确认信息与明细</td> <td>消息队列</td> <td>异步可靠</td> </tr> <tr> <td>INV-INT-002</td> <td>WMS出库回执</td> <td>WMS系统</td> <td>入站</td> <td>WMS完成出库作业后，回传出库确认与实发明细</td> <td>消息队列</td> <td>异步可靠</td> </tr> <tr> <td>INV-INT-003</td> <td>WMS库存快照</td> <td>WMS系统</td> <td>入站</td> <td>WMS定时同步全量库存快照，用于对账校准</td> <td>定时任务</td> <td>日终批量</td> </tr> <tr> <td>INV-INT-004</td> <td>ERP主数据同步</td> <td>ERP系统</td> <td>入站</td> <td>同步SKU、仓库、货主等基础主数据</td> <td>消息队列</td> <td>增量同步</td> </tr> <tr> <td>INV-INT-005</td> <td>TMS物流状态回传</td> <td>TMS系统</td> <td>入站</td> <td>同步调拨在途、配送在途的物流状态</td> <td>消息队列</td> <td>状态追踪</td> </tr> </tbody> </table> <p style="margin-top: 15px;"><span class="todo">待补充</span> 详细接口字段定义、错误码表、鉴权方式以《库存系统接口技术规格书》为准。</p> </div> </div> <div class="section" id="section7"> <div class="section-title" onclick="toggleSection('section7')">7. 异常与错误处理</div> <div class="section-content"> <p>系统针对各类业务异常与技术异常设计统一的处理机制，确保异常可感知、可追溯、可恢复。</p> <h3 class="subsection-title">7.1 业务异常处理</h3> <ul class="error-list"> <li> <span class="error-code">BIZ-001 库存不足异常</span> <p>处理方式：预占或扣减时可用库存不足，立即返回失败并提示具体缺口数量；不允许负库存操作；触发库存不足预警。</p> </li> <li> <span class="error-code">BIZ-002 重复预占异常</span> <p>处理方式：基于订单号做幂等校验，同一订单重复预占直接返回首次预占结果，不重复扣减库存。</p> </li> <li> <span class="error-code">BIZ-003 库存状态非法</span> <p>处理方式：操作目标库存状态不允许当前操作（如已冻结库存执行出库），拒绝操作并返回具体状态说明。</p> </li> <li> <span class="error-code">BIZ-004 批次/效期不存在</span> <p>处理方式：指定的批号或效期在仓库中不存在，拒绝操作并提示核对批次信息。</p> </li> <li> <span class="error-code">BIZ-005 调拨在途未核销</span> <p>处理方式：调入仓已入库但调出仓未出库确认，触发异常对账流程，人工介入核查。</p> </li> </ul> <h3 class="subsection-title">7.2 技术异常处理</h3> <ul class="error-list"> <li> <span class="error-code">SYS-001 接口超时异常</span> <p>处理方式：设置合理超时时间，超时后自动重试（查询类可重试，交易类需基于幂等键重试）；超过重试次数返回系统繁忙，触发告警。</p> </li> <li> <span class="error-code">SYS-002 缓存击穿/雪崩</span> <p>处理方式：采用多级缓存架构，设置热点数据永不过期，使用互斥锁或队列防止缓存击穿，降级时返回数据库准实时数据。</p> </li> <li> <span class="error-code">SYS-003 消息消费失败</span> <p>处理方式：消息消费失败自动重试，达到最大重试次数后进入死信队列，告警通知人工处理；保证消息不丢失。</p> </li> <li> <span class="error-code">SYS-004 数据库连接异常</span> <p>处理方式：连接池监控，异常时快速失败并触发告警；核心流程支持读写分离与主备切换。</p> </li> </ul> <h3 class="subsection-title">7.3 数据一致性保障</h3> <p>库存数据一致性通过以下机制保障：</p> <ul style="padding-left: 25px; margin-bottom: 10px;"> <li><strong>乐观锁机制</strong>：库存扣减采用版本号乐观锁，防止并发超卖</li> <li><strong>事务补偿</strong>：跨系统操作失败时，通过补偿机制回滚已执行步骤</li> <li><strong>定时对账</strong>：日终进行销售层-调度层-仓库层三级库存对账，差异自动预警</li> <li><strong>操作留痕</strong>：所有库存变动记录完整操作日志，支持全链路追溯</li> </ul> </div> </div> <div class="section" id="section8"> <div class="section-title" onclick="toggleSection('section8')">8. 非功能需求（NFR）</div> <div class="section-content"> <div class="nfr-grid"> <div class="nfr-card"> <h4>8.1 性能需求</h4> <ul> <li>可售库存查询：单SKU查询响应时间 ≤ 50ms，批量查询（100个）≤ 200ms</li> <li>库存预占接口：平均响应时间 ≤ 100ms，99分位 ≤ 300ms</li> <li>系统支持峰值QPS ≥ 5000，大促期间可弹性扩容</li> <li>日终批量对账处理时长 ≤ 30分钟</li> <li>库存数据同步延迟：调度层到销售层 ≤ 1s，仓库层到调度层 ≤ 5s</li> </ul> </div> <div class="nfr-card"> <h4>8.2 安全需求</h4> <ul> <li>所有接口需鉴权认证，禁止匿名访问</li> <li>库存调整等关键操作需双人复核与审批留痕</li> <li>操作日志完整记录操作人、时间、IP、操作内容，不可篡改</li> <li>数据传输全程加密，敏感数据脱敏展示</li> <li>支持按角色、仓库、货主维度的数据权限隔离</li> <li>满足等保三级合规要求</li> </ul> </div> <div class="nfr-card"> <h4>8.3 可用性需求</h4> <ul> <li>系统全年可用率 ≥ 99.9%</li> <li>核心查询服务支持降级运行，保障基本销售业务不受影响</li> <li>支持灰度发布与不停机升级</li> <li>故障恢复时间（RTO）≤ 30分钟</li> <li>数据恢复点目标（RPO）≤ 5分钟</li> <li>提供7×24小时监控告警</li> </ul> </div> <div class="nfr-card"> <h4>8.4 可运维需求</h4> <ul> <li>提供统一监控大盘，实时展示库存关键指标与系统健康度</li> <li>支持全链路追踪，可快速定位问题节点</li> <li>提供库存对账工具与数据修复工具</li> <li>支持容器化部署与弹性伸缩</li> <li>关键配置支持热更新，无需重启服务</li> <li>日志标准化输出，支持集中采集与检索</li> </ul> </div> <div class="nfr-card"> <h4>8.5 可扩展性</h4> <ul> <li>支持多货主、多仓库、多渠道的横向扩展</li> <li>业务规则可配置，新增业务场景尽量无需代码开发</li> <li>接口设计标准化，便于新渠道、新系统快速接入</li> <li>数据层支持分库分表，支撑亿级数据量</li> </ul> </div> <div class="nfr-card"> <h4>8.6 数据准确性</h4> <ul> <li>系统库存数据准确率 ≥ 99.95%</li> <li>三级库存数据一致性误差率 ≤ 0.05%</li> <li>库存盘点差异率 ≤ 0.1%（按金额计算）</li> <li>关键操作数据零丢失</li> </ul> </div> </div> </div> </div> <div class="section" id="section9"> <div class="section-title" onclick="toggleSection('section9')">9. 依赖与约束</div> <div class="section-content"> <h3 class="subsection-title">9.1 系统依赖</h3> <table> <thead> <tr> <th width="20%">依赖系统</th> <th width="15%">依赖类型</th> <th width="40%">依赖内容</th> <th width="25%">责任方</th> </tr> </thead> <tbody> <tr> <td>ERP系统</td> <td>强依赖</td> <td>SKU主数据、货主数据、仓库数据、采购入库单、财务核算数据</td> <td><span class="todo">待补充</span></td> </tr> <tr> <td>OMS订单系统</td> <td>强依赖</td> <td>订单数据、订单状态变更、取消/退款通知</td> <td><span class="todo">待补充</span></td> </tr> <tr> <td>WMS仓储管理系统</td> <td>强依赖</td> <td>仓储作业执行、实物库存数据、出入库回执</td> <td><span class="todo">待补充</span></td> </tr> <tr> <td>TMS运输管理系统</td> <td>弱依赖</td> <td>调拨物流状态、配送在途跟踪</td> <td><span class="todo">待补充</span></td> </tr> <tr> <td>统一身份认证平台</td> <td>强依赖</td> <td>用户认证、权限管理、单点登录</td> <td><span class="todo">待补充</span></td> </tr> <tr> <td>消息中间件</td> <td>强依赖</td> <td>系统间异步通信、解耦与流量削峰</td> <td>基础架构部</td> </tr> <tr> <td>缓存系统（Redis）</td> <td>强依赖</td> <td>实时库存缓存、热点数据加速</td> <td>基础架构部</td> </tr> </tbody> </table> <h3 class="subsection-title">9.2 业务约束</h3> <ul style="padding-left: 25px; margin-bottom: 15px;"> <li>库存操作必须有对应的业务单据支撑，禁止无凭无据的库存调整</li> <li>负库存禁止出库，特殊场景需经特批并记录备案</li> <li>库存成本核算遵循财务制度，由ERP统一负责，本系统不涉及成本计算</li> <li>各渠道库存分配策略需符合公司整体销售政策与渠道管理规范</li> <li>盘点差异调整需经财务确认后方可执行</li> </ul> <h3 class="subsection-title">9.3 技术约束</h3> <ul style="padding-left: 25px; margin-bottom: 15px;"> <li>遵循企业统一技术栈规范，采用公司指定的开发语言与中间件</li> <li>数据存储使用公司统一数据库资源，遵循数据安全管理规范</li> <li>接口规范遵循企业服务总线（ESB）接入标准</li> <li>部署架构需符合企业云原生平台规范</li> <li>日志与监控接入公司统一监控平台</li> </ul> </div> </div> <div class="section" id="section10"> <div class="section-title" onclick="toggleSection('section10')">10. 附录</div> <div class="section-content"> <div class="appendix-item"> <strong>附录A：术语表</strong> <table style="margin-top: 10px;"> <thead> <tr> <th width="20%">术语</th> <th width="80%">定义说明</th> </tr> </thead> <tbody> <tr> <td>SKU</td> <td>Stock Keeping Unit，库存保有单位，即最小库存管理单元</td> </tr> <tr> <td>WMS</td> <td>Warehouse Management System，仓储管理系统</td> </tr> <tr> <td>OMS</td> <td>Order Management System，订单管理系统</td> </tr> <tr> <td>TMS</td> <td>Transportation Management System，运输管理系统</td> </tr> <tr> <td>ERP</td> <td>Enterprise Resource Planning，企业资源计划系统</td> </tr> <tr> <td>预占库存</td> <td>订单创建后暂时锁定的库存，未正式扣减，订单取消可释放</td> </tr> <tr> <td>可用库存</td> <td>仓库中可用于销售发货的实物库存（扣除已预占部分）</td> </tr> <tr> <td>在途库存</td> <td>已发出但尚未到达目的仓库的库存，包括采购在途、调拨在途等</td> </tr> <tr> <td>一盘货</td> <td>全局库存统一管理、全渠道共享的库存管理模式</td> </tr> <tr> <td>FIFO</td> <td>First In First Out，先进先出出库策略</td> </tr> </tbody> </table> </div> <div class="appendix-item" style="margin-top: 20px;"> <strong>附录B：参考文档</strong> <ul style="padding-left: 25px; margin-top: 10px;"> <li>《库存系统业务需求说明书》</li> <li>《库存系统技术架构设计文档》</li> <li>《库存系统接口技术规格书》</li> <li>《企业数据安全管理规范》</li> <li>《企业应用集成技术标准》</li> </ul> </div> <div class="appendix-item" style="margin-top: 20px;"> <strong>附录C：待确认事项</strong> <ul style="padding-left: 25px; margin-top: 10px;"> <li><span class="todo">待补充</span> 各系统对接责任方与排期确认</li> <li><span class="todo">待补充</span> 历史库存数据迁移方案与范围</li> <li><span class="todo">待补充</span> 上线切换策略与割接方案</li> <li><span class="todo">待补充</span> 性能指标的具体业务场景定义</li> </ul> </div> </div> </div> </div>
+<button class="back-to-top" onclick="scrollToTop()" title="回到顶部">↑</button>
+<script> // 章节折叠/展开 function toggleSection(sectionId) { var section = document.getElementById(sectionId); section.classList.toggle('collapsed'); } // 回到顶部 function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); } // 默认所有章节展开 document.addEventListener('DOMContentLoaded', function() { // 初始状态：全部展开 }); </script></body> </html>
