@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AWS Bedrock 企业级解决方案全景指南</title>
+<style>
+:root {
+  --brand:#232f3e; --accent:#ec7211; --accent2:#1a73e8;
+  --bg:#f6f7f9; --card:#fff; --ink:#1f2430; --muted:#5b6472; --line:#e3e6ea;
+  --green:#1e8e3e; --red:#d93025; --purple:#7c3aed;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",Roboto,Arial,sans-serif;
+  line-height:1.8;font-size:15.5px}
+.topbar{position:sticky;top:0;z-index:50;background:var(--brand);color:#fff;padding:10px 24px;
+  display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.topbar .logo{font-weight:700;font-size:15px}.topbar .logo span{color:var(--accent)}
+.topbar .meta{font-size:12.5px;color:#c9d2dd;margin-left:auto}
+.layout{display:flex;max-width:1320px;margin:0 auto;gap:26px;padding:24px}
+nav.toc{position:sticky;top:76px;align-self:flex-start;width:260px;flex:0 0 260px;
+  max-height:calc(100vh - 96px);overflow-y:auto;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:16px 14px;font-size:13px}
+nav.toc .toc-title{font-weight:700;font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+nav.toc ul{list-style:none;margin:0;padding:0}
+nav.toc a{color:var(--ink);text-decoration:none;display:block;padding:4px 8px;border-radius:6px;border-left:3px solid transparent}
+nav.toc a:hover{background:#fff3e6;color:var(--accent)}
+nav.toc .l2 a{padding-left:20px;color:var(--muted);font-size:12.5px}
+nav.toc .l2 a:hover{color:var(--accent)}
+main.content{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:44px 52px}
+h1{font-size:27px;line-height:1.35;color:var(--brand);margin:0 0 6px;padding-bottom:14px;border-bottom:3px solid var(--accent)}
+.sub{color:var(--muted);margin-top:0}
+h2{font-size:21px;color:var(--brand);margin:44px 0 14px;padding:10px 16px;
+  background:linear-gradient(90deg,#fff3e6,transparent);border-left:5px solid var(--accent);border-radius:0 8px 8px 0}
+h3{font-size:17.5px;color:var(--brand);margin:30px 0 10px}
+h3::before{content:"▸ ";color:var(--accent)}
+h4{font-size:15.5px;color:var(--brand);margin:18px 0 6px}
+p{margin:9px 0}
+strong{color:#0f1c2e}
+a{color:var(--accent2)}
+ul,ol{padding-left:24px}li{margin:4px 0}
+code{background:#f1f3f6;padding:1.5px 6px;border-radius:5px;font-size:13.5px;
+  font-family:"SF Mono",Menlo,Consolas,monospace;color:#c0341d}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.8px;display:block;overflow-x:auto}
+thead th{background:var(--brand);color:#fff;text-align:left;padding:9px 12px;font-size:13px;white-space:nowrap}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:#f8f9fb}
+tbody tr:hover{background:#fff7ec}
+blockquote{margin:14px 0;padding:12px 18px;background:#f0f7ff;border-left:4px solid var(--accent2);border-radius:0 8px 8px 0;color:#33415c}
+.callout{margin:16px 0;padding:14px 18px;border-radius:10px;font-size:14.5px}
+.callout.problem{background:#fdecea;border-left:4px solid var(--red)}
+.callout.solve{background:#e6f4ea;border-left:4px solid var(--green)}
+.callout .tag{display:inline-block;font-size:11.5px;font-weight:800;color:#fff;padding:2px 10px;border-radius:12px;margin-right:8px;vertical-align:2px}
+.callout.problem .tag{background:var(--red)}
+.callout.solve .tag{background:var(--green)}
+.card{border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:18px 0;background:#fcfcfd}
+.card h4{margin-top:0;font-size:16px}
+.svc{display:inline-block;background:#eef2f7;border:1px solid #d4dbe5;border-radius:6px;
+  padding:1px 8px;margin:1px 2px;font-size:13px;font-weight:600;color:#2c3e50;white-space:nowrap}
+.flow{background:#0f1c2e;color:#d7e3f4;border-radius:10px;padding:14px 18px;font-size:13.5px;
+  font-family:"SF Mono",Menlo,Consolas,monospace;line-height:1.9;overflow-x:auto;margin:12px 0;white-space:pre}
+.flow .hl{color:#ffb86b}
+.badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;padding:2px 9px;border-radius:11px;vertical-align:2px;margin-left:6px}
+.badge.managed{background:var(--green)}.badge.serverless{background:var(--accent2)}.badge.opt{background:#8a94a6}
+@media print{.topbar,nav.toc{display:none}.layout{padding:0}main.content{border:none;padding:0}
+  h1,h2,h3{break-after:avoid}table,.card,.callout{break-inside:avoid}body{font-size:12px}}
+@media (max-width:960px){nav.toc{display:none}main.content{padding:24px 20px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">AWS <span>Bedrock</span> 企业级解决方案全景指南</div>
+  <div class="meta">Enterprise GenAI on AWS · 中文（专业术语保留英文）</div>
+</div>
+<div class="layout">
+<nav class="toc">
+  <div class="toc-title">目录 Contents</div>
+  <ul>
+    <li><a href="#s1"><b>1. 全景架构总览</b></a></li>
+    <li><a href="#s2"><b>2. 核心引擎 Amazon Bedrock</b></a></li>
+    <li class="l2"><a href="#s2-1">2.1 推理 API 体系</a></li>
+    <li class="l2"><a href="#s2-2">2.2 容量模式与请求路由</a></li>
+    <li class="l2"><a href="#s2-3">2.3 Knowledge Bases（托管 RAG）</a></li>
+    <li class="l2"><a href="#s2-4">2.4 Agents 与 AgentCore</a></li>
+    <li class="l2"><a href="#s2-5">2.5 Flows 与 Prompt Management</a></li>
+    <li class="l2"><a href="#s2-6">2.6 Guardrails 内容安全</a></li>
+    <li class="l2"><a href="#s2-7">2.7 Model Evaluation 与 Customization</a></li>
+    <li class="l2"><a href="#s2-8">2.8 Bedrock Data Automation</a></li>
+    <li><a href="#s3"><b>3. 六大企业级解决方案模式</b></a></li>
+    <li class="l2"><a href="#s3-1">3.1 RAG 知识库问答</a></li>
+    <li class="l2"><a href="#s3-2">3.2 企业级 Agent / 多智能体</a></li>
+    <li class="l2"><a href="#s3-3">3.3 实时流式交互</a></li>
+    <li class="l2"><a href="#s3-4">3.4 文档智能处理管道</a></li>
+    <li class="l2"><a href="#s3-5">3.5 企业搜索 Q Business</a></li>
+    <li class="l2"><a href="#s3-6">3.6 AI 编码助手 Q Developer</a></li>
+    <li><a href="#s4"><b>4. 八大企业级横切关注点</b></a></li>
+    <li class="l2"><a href="#s4-1">4.1 安全与访问控制</a></li>
+    <li class="l2"><a href="#s4-2">4.2 合规与数据驻留</a></li>
+    <li class="l2"><a href="#s4-3">4.3 内容安全与 Responsible AI</a></li>
+    <li class="l2"><a href="#s4-4">4.4 解决方案工程化（MLOps）</a></li>
+    <li class="l2"><a href="#s4-5">4.5 响应时间与性能优化</a></li>
+    <li class="l2"><a href="#s4-6">4.6 韧性与灾难降级</a></li>
+    <li class="l2"><a href="#s4-7">4.7 上下文与记忆管理</a></li>
+    <li class="l2"><a href="#s4-8">4.8 跟踪与可观测性</a></li>
+    <li><a href="#s5"><b>5. 服务速查总表</b></a></li>
+  </ul>
+</nav>
+<main class="content">
+
+<h1>AWS Bedrock 企业级解决方案全景指南</h1>
+<p class="sub">从单点模型调用到生产级 GenAI 平台：架构全景、服务分工、六大解决方案模式、八大横切关注点。中文讲解，专业术语与 AWS 服务名保留英文。</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2 id="s1">1. 全景架构总览：一套企业级 GenAI 方案由哪几层组成？</h2>
+
+<p>一套生产级 GenAI 方案绝不是"调一个模型 API"那么简单。AWS 的设计哲学是：<strong>以 Amazon Bedrock 为模型与 GenAI 能力中枢，周围环绕数据层、编排层、接入层、安全治理层、可观测层</strong>，每层由专门的托管服务组成，全部 serverless / managed，企业无需管理 GPU 和模型基础设施。</p>
+
+<div class="flow">┌─────────────────────────────────────────────────────────────────┐
+│  接入层 Experience    Web/Mobile · <span class="hl">CloudFront</span> · <span class="hl">API Gateway</span>(REST/HTTP/WebSocket) · <span class="hl">AppSync</span> · <span class="hl">Amplify</span>   │
+├─────────────────────────────────────────────────────────────────┤
+│  编排层 Orchestration <span class="hl">Lambda</span> · <span class="hl">Step Functions</span> · <span class="hl">EventBridge</span> · <span class="hl">SQS</span> · <span class="hl">Bedrock Flows</span> · <span class="hl">AppConfig</span> │
+├─────────────────────────────────────────────────────────────────┤
+│  GenAI 中枢 Amazon Bedrock                                        │
+│   推理 APIs · Knowledge Bases · Agents/AgentCore · Guardrails     │
+│   Flows · Prompt Management · Evaluation · Customization · BDA    │
+├─────────────────────────────────────────────────────────────────┤
+│  数据层 Data          <span class="hl">S3</span> · <span class="hl">OpenSearch Serverless</span> · <span class="hl">Aurora pgvector</span> · <span class="hl">MemoryDB</span>      │
+│                       <span class="hl">Neptune Analytics</span>(GraphRAG) · <span class="hl">DynamoDB</span> · <span class="hl">Glue</span> · <span class="hl">Lake Formation</span> │
+├─────────────────────────────────────────────────────────────────┤
+│  安全治理 Security    <span class="hl">IAM</span>(ABAC/条件键) · <span class="hl">SCP</span> · <span class="hl">KMS</span> · <span class="hl">VPC Endpoint/PrivateLink</span>     │
+│                       <span class="hl">Cognito</span> · <span class="hl">Macie</span> · <span class="hl">CloudTrail</span> · <span class="hl">Guardrails</span>                  │
+├─────────────────────────────────────────────────────────────────┤
+│  可观测 Observability <span class="hl">CloudWatch</span>(指标/日志/Anomaly Detection) · <span class="hl">X-Ray</span> · <span class="hl">A2I</span>(人工兜底) │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+<table>
+<thead><tr><th>分层</th><th>职责</th><th>核心服务</th><th>解决什么问题</th></tr></thead>
+<tbody>
+<tr><td><strong>接入层</strong></td><td>用户流量入口、协议适配、推送通道</td><td><span class="svc">API Gateway</span><span class="svc">AppSync</span><span class="svc">CloudFront</span><span class="svc">Amplify</span></td><td>统一认证、限流、WebSocket 双向流式推送、全球低延迟接入</td></tr>
+<tr><td><strong>编排层</strong></td><td>业务流与 GenAI 步骤的粘合</td><td><span class="svc">Lambda</span><span class="svc">Step Functions</span><span class="svc">EventBridge</span><span class="svc">Bedrock Flows</span><span class="svc">AppConfig</span></td><td>多步工作流、事件驱动、人工审批节点、动态配置与 A/B</td></tr>
+<tr><td><strong>GenAI 中枢</strong></td><td>模型推理与全部 GenAI 原语</td><td><span class="svc">Amazon Bedrock</span> 全家桶</td><td>免管 GPU/模型托管，API 化获得 LLM 全部能力</td></tr>
+<tr><td><strong>数据层</strong></td><td>语料存储、向量索引、会话状态、治理</td><td><span class="svc">S3</span><span class="svc">OpenSearch Serverless</span><span class="svc">Aurora pgvector</span><span class="svc">MemoryDB</span><span class="svc">Neptune Analytics</span><span class="svc">DynamoDB</span><span class="svc">Glue</span></td><td>RAG 检索底座、低延迟状态、数据血缘与质量</td></tr>
+<tr><td><strong>安全治理层</strong></td><td>身份、边界、加密、内容安全、审计</td><td><span class="svc">IAM</span><span class="svc">SCP</span><span class="svc">KMS</span><span class="svc">PrivateLink</span><span class="svc">Guardrails</span><span class="svc">Macie</span><span class="svc">CloudTrail</span></td><td>最小权限、数据不出私网/不出境、PII 防护、全程可审计</td></tr>
+<tr><td><strong>可观测层</strong></td><td>指标、日志、追踪、告警、人工复审</td><td><span class="svc">CloudWatch</span><span class="svc">X-Ray</span><span class="svc">Amazon A2I</span></td><td>token 成本可视、质量漂移告警、根因定位、人工兜底</td></tr>
+</tbody>
+</table>
+
+<blockquote>关键原则：<strong>能用托管服务就不自建</strong>。Bedrock 把"模型托管"这件事消灭了；Knowledge Bases 把"RAG 管道"消灭了；Guardrails 把"内容安全中间件"消灭了。企业工程重心应放在数据质量、编排逻辑与治理策略上。</blockquote>
+
+<!-- ==================== Section 2 ==================== -->
+<h2 id="s2">2. 核心引擎：Amazon Bedrock 详解</h2>
+
+<p>Amazon Bedrock 是全托管的 GenAI 服务：<strong>一个 API 入口，多家厂商的 Foundation Models（FM）</strong>——Anthropic Claude、Amazon Nova/Titan、Meta Llama、Mistral、Cohere、AI21 等。它不只是"模型代理"，而是一整套 GenAI 原语（primitives）的集合。下面逐个拆解。</p>
+
+<h3 id="s2-1">2.1 推理 API 体系：四种调用方式怎么选</h3>
+
+<table>
+<thead><tr><th>API</th><th>返回方式</th><th>典型场景</th><th>注意点</th></tr></thead>
+<tbody>
+<tr><td><code>InvokeModel</code></td><td>一次性完整响应</td><td>后台批处理、非交互任务</td><td>延迟 = 完整生成时间，不适合聊天</td></tr>
+<tr><td><code>InvokeModelWithResponseStream</code></td><td><strong>token 级流式</strong></td><td>聊天、实时助手、长响应（15–45s）</td><td>显著降低"感知延迟"，前端可逐字渲染</td></tr>
+<tr><td><code>Converse / ConverseStream</code></td><td>一次性 / 流式</td><td><strong>多轮对话的标准接口</strong>，跨模型消息格式统一</td><td>上下文通过请求中的 <code>messages</code> 数组显式传递；支持 tool use</td></tr>
+<tr><td><code>InvokeModel</code>（Batch 模式）</td><td>异步，结果写 S3</td><td>大规模离线任务（万级 prompt）</td><td>价格更低，但绝不能用于交互式场景</td></tr>
+</tbody>
+</table>
+
+<div class="callout solve"><span class="tag">解决</span>不同交互形态（实时聊天 / 多轮对话 / 离线批跑）用不同 API，避免"一个 API 硬撑所有场景"导致的延迟与成本失控。Converse API 还解决了"换模型就要改代码"的问题——消息格式与厂商无关。</div>
+
+<h3 id="s2-2">2.2 容量模式与请求路由：钱花在哪、流量往哪走</h3>
+
+<table>
+<thead><tr><th>模式</th><th>计费</th><th>适用</th><th>关键陷阱</th></tr></thead>
+<tbody>
+<tr><td><strong>On-Demand</strong></td><td>按 token 计费，无固定成本</td><td>流量波动大、时区型高峰、POC</td><td>有账户级 TPS/TPM 配额，峰值会被 throttle</td></tr>
+<tr><td><strong>Provisioned Throughput (PT)</strong></td><td>按 Model Unit 小时计费（有固定成本）</td><td>稳定高吞吐、延迟敏感、生产 SLA</td><td>⚠️ 必须用 <code>CreateProvisionedModelThroughput</code> 返回的<strong>模型 ARN</strong> 调用，否则流量仍走 On-Demand</td></tr>
+<tr><td><strong>Cross-Region Inference (CRI) Profile</strong></td><td>按 token（同 On-Demand）</td><td>削峰、容灾、<strong>数据驻留</strong></td><td>modelId 换成带地理代码的 profile ID（如 <code>eu.amazon.nova-pro-v1:0</code>）；SCP 需显式放行</td></tr>
+<tr><td><strong>Latency-Optimized Inference</strong></td><td>按 token（略高）</td><td>不加基础设施即可压低推理延迟</td><td>通过 <code>PerformanceConfigLatency=optimized</code> 开启</td></tr>
+</tbody>
+</table>
+
+<div class="callout solve"><span class="tag">解决</span><strong>成本与稳定性的矛盾</strong>：波动流量用 On-Demand 不为闲置付费；稳定生产用 PT 锁定 SLA；峰值限流用 CRI 在同地理范围内自动分流——同时满足"欧洲数据不出欧洲"这类合规要求（EU 范围 profile 只路由到 EU Region）。</div>
+
+<h3 id="s2-3">2.3 Knowledge Bases：全托管 RAG，一条 API 取代整条管道</h3>
+
+<p><span class="svc">Bedrock Knowledge Bases</span> 把 RAG 的六个环节全部托管：<strong>Ingestion（S3 摄取）→ Chunking（分块）→ Embedding（嵌入）→ Vector Index（向量索引）→ Retrieval（检索）→ Context Assembly（上下文组装）</strong>。</p>
+
+<ul>
+<li><strong>三个检索 API</strong>：<code>Retrieve</code>（只检索，自行拼 prompt）、<code>RetrieveAndGenerate</code>（检索+生成一站式，<strong>原生返回 Citations 引用</strong>）、<code>RetrieveAndGenerateStream</code>（流式版）。</li>
+<li><strong>底层向量库可选</strong>：<span class="svc">OpenSearch Serverless</span>（大规模+元数据过滤首选）、<span class="svc">Aurora PostgreSQL pgvector</span>（<100 万向量、向量与元数据同库）、<span class="svc">MemoryDB</span>（小数据集极致召回，HNSW 索引）、<span class="svc">S3 Vectors</span>、<span class="svc">Neptune Analytics</span>（GraphRAG）。</li>
+<li><strong>分块策略</strong>：Fixed-size（简单但断语义）、Semantic（按意义边界切，治长文档截断）、Hierarchical（父块 1000/子块 200，治跨章节引用）、Layout-aware（保表格↔文字关联）。</li>
+<li><strong>检索增强</strong>：Reranking（内置重排，治"语义相似但上下文无关"）、Metadata Filtering（元数据收窄候选集）、Query Decomposition（复杂查询拆子查询）、Hybrid Search（向量+BM25，治精确术语漏召回）、GraphRAG（多跳实体关系）。</li>
+<li><strong>Source Attribution</strong>：每条生成内容可链接回源文档——金融/医疗/法律合规的硬需求。</li>
+</ul>
+
+<div class="callout solve"><span class="tag">解决</span>三件事：① <strong>Hallucination（幻觉）</strong>——模型只能基于检索到的企业数据回答；② <strong>知识时效</strong>——重跑 Ingestion Job 即更新知识，无需重训模型；③ <strong>工程成本</strong>——不用自建 embedding 管道、向量索引与检索编排。</div>
+
+<h3 id="s2-4">2.4 Agents 与 AgentCore：从"问答"到"办事"</h3>
+
+<table>
+<thead><tr><th>能力</th><th>是什么</th><th>解决什么</th></tr></thead>
+<tbody>
+<tr><td><strong>Bedrock Agents</strong></td><td>FM + 指令 + Action Groups 的自主任务执行体，ReAct 循环（推理→行动→观察）</td><td>查库存、下工单、调内部 API 等多步任务</td></tr>
+<tr><td><strong>Action Groups</strong></td><td>用 <strong>OpenAPI schema</strong> 或 Lambda 定义 agent 可调用的工具</td><td>工具能力的标准化封装与权限边界</td></tr>
+<tr><td><strong>Return of Control (RoC)</strong></td><td>agent 只返回参数，由调用方自己的后端执行</td><td>已有企业系统不便暴露 Lambda 时，安全接入</td></tr>
+<tr><td><strong>Memory（跨会话）</strong></td><td>可配置保留天数的长期记忆</td><td>记住用户偏好，跨会话个性化</td></tr>
+<tr><td><strong>Code Interpretation</strong></td><td>agent 生成并沙箱运行代码</td><td>数据分析、图表、计算类任务</td></tr>
+<tr><td><strong>Multi-Agent Collaboration</strong></td><td><strong>Supervisor + Collaborator</strong>：主管意图分类路由，专员各管领域+独立 KB</td><td>多部门助手：隔离、准确、易扩展（新部门=新 collaborator）</td></tr>
+<tr><td><strong>AgentCore</strong></td><td>托管的 agent 运行时：记忆、会话感知、身份、事件处理、可观测</td><td>agent 的"生产底座"，免去自建状态与编排</td></tr>
+<tr><td><strong>Agents Tracing</strong></td><td>端到端推理步骤与工具调用轨迹</td><td>透明性、调试与监管审计</td></tr>
+</tbody>
+</table>
+
+<div class="callout solve"><span class="tag">解决</span>LLM"只会说不会做"的问题，同时用 Action Group 权限边界 + Trace 解决"agent 乱调工具不可控、不可审计"的企业顾虑。MCP（Model Context Protocol）场景下，远程 MCP server 用 <strong>Streamable HTTP</strong> 传输 + <strong>Cognito OAuth 2.1</strong> 做用户级授权。</div>
+
+<h3 id="s2-5">2.5 Flows 与 Prompt Management：GenAI 工作流的工程化</h3>
+
+<ul>
+<li><span class="svc">Bedrock Flows</span>：<strong>可视化托管工作流编排</strong>。节点类型含 Prompt 节点、Agent 节点、Knowledge Base 节点、S3 Action 节点（取/存数据）、Expression 节点（确定性解析）、Guardrail 节点。把"S3 取文件 → 抽取特定段落 → 送模型审核 → 结果写回 S3"这类流程免代码串起来。</li>
+<li><span class="svc">Prompt Management</span>：Prompt 的<strong>版本控制 + 审批工作流 + 变量参数化</strong>（<code>{{variable}}</code> 定义必填输入与输出格式）。数百个模板跨团队治理、防 prompt drift、配合 IAM 控制谁能发布、CloudTrail 全程审计。</li>
+<li><span class="svc">Intelligent Prompt Routing</span>：按 prompt 复杂度<strong>自动路由到大小模型</strong>——70% 简单问题走小模型省钱降延迟，30% 复杂问题走大模型保质量，零自定义分类代码。</li>
+</ul>
+
+<h3 id="s2-6">2.6 Guardrails：推理路径上的内容安全闸门</h3>
+
+<p><span class="svc">Bedrock Guardrails</span> 在<strong>输入与输出双侧内联执行</strong>（低延迟，可满足 200ms 级要求），六大能力：</p>
+
+<table>
+<thead><tr><th>能力</th><th>干什么</th><th>关键配置</th></tr></thead>
+<tbody>
+<tr><td><strong>Content Filters</strong></td><td>hate / sexual / violence / insults / misconduct / <strong>prompt attack（防注入）</strong></td><td>强度 low/medium/high；面向客户金融场景建议 medium，防注入用 high</td></tr>
+<tr><td><strong>Denied Topics</strong></td><td>整类话题拒绝（投资建议、保证收益）</td><td>定义 + 示例短语提高检出率</td></tr>
+<tr><td><strong>Sensitive Info (PII)</strong></td><td>PII 检测与处理</td><td>三种动作：<strong>block</strong>（拦截，用于输入）/ <strong>mask</strong>（打码，用于输出与测试验证）/ <strong>detect</strong>（只标记不阻断）</td></tr>
+<tr><td><strong>Word Filters</strong></td><td>自定义词表（如竞争对手名称）</td><td>content filter 做不到的事交给它</td></tr>
+<tr><td><strong>Contextual Grounding</strong></td><td>验证输出是否基于给定上下文（防幻觉）</td><td>高阈值 = 强制有据可依</td></tr>
+<tr><td><strong>Guardrail Profile</strong></td><td>同一护栏配置跨区域一致应用</td><td>⚠️ guardrail 是 Region 级资源，数据驻留场景每 Region 部署本地副本</td></tr>
+</tbody>
+</table>
+
+<div class="callout solve"><span class="tag">解决</span>把"内容安全"从应用代码里抽出来成为<strong>平台级、可版本化、可审计的策略层</strong>。集中治理模式：CloudFormation StackSets 把 guardrail 下发到所有账户 + SCP 强制调用必须携带 guardrail ID。</div>
+
+<h3 id="s2-7">2.7 Model Evaluation 与 Customization：质量与定制</h3>
+
+<ul>
+<li><strong>Model Evaluation</strong>：JSONL 数据集放 S3 → 评估作业 → 结果写 S3。支持 automatic metrics（BERTScore 等）与 <strong>LLM-as-a-judge</strong>（固定同一 judge 模型保证横向可比，数值评分 1–5 可做 CI/CD 质量门禁）。RAG 场景区分 <code>retrieve-only</code> 与 <code>retrieve-and-generate</code> 两类作业。</li>
+<li><strong>Customization 三档</strong>：<strong>Fine-tuning</strong>（标注数据，改变行为/风格/格式；定制模型只能用 Provisioned Throughput 调用）、<strong>Continued Pre-training</strong>（未标注语料，注入领域知识）、<strong>Model Distillation</strong>（大模型教小模型，降本）。<strong>Custom Model Import</strong> 可把自训模型迁入 Bedrock 统一管理。</li>
+<li>决策口诀：<strong>先 RAG → 再 Prompt Engineering → 最后才微调</strong>。</li>
+</ul>
+
+<h3 id="s2-8">2.8 Bedrock Data Automation（BDA）：多模态数据进 RAG 的传送带</h3>
+<p><span class="svc">Bedrock Data Automation</span> 面向大规模多模态语料（PDF、PPT、图片、音/视频）的自动化处理编排：内部集成 <span class="svc">Textract</span>（文档抽取）与 <span class="svc">Transcribe</span>（语音转写），输出结构化摘要/概念供 FM 使用。解决"非结构化多模态数据无法直接进 RAG"的问题。</p>
+
+<!-- ==================== Section 3 ==================== -->
+<h2 id="s3">3. 六大企业级解决方案模式：每种解决什么问题、由什么组成</h2>
+
+<h3 id="s3-1">3.1 模式一：RAG 知识库问答（企业知识助手）</h3>
+
+<div class="callout problem"><span class="tag">问题</span>通用大模型不懂企业内部知识（产品手册、合规条例、临床指南、历史会话），直接问会幻觉编造；全量微调贵且知识一更新就过时。</div>
+
+<div class="card">
+<h4>架构组成与数据流</h4>
+<div class="flow">S3 语料 → <span class="hl">Knowledge Bases</span>(摄取/分块/嵌入) → 向量库(<span class="hl">OpenSearch Serverless</span>)
+用户问题 → <span class="hl">API Gateway</span> → <span class="hl">Lambda</span> → KB <span class="hl">RetrieveAndGenerate</span> → 带回引用的答案
+                           └→ <span class="hl">Guardrails</span>(接地校验+PII)  └→ 会话状态 <span class="hl">DynamoDB</span></div>
+<table>
+<thead><tr><th>服务</th><th>在方案中的职责</th></tr></thead>
+<tbody>
+<tr><td><span class="svc">S3</span></td><td>语料源存储；版本控制、Lifecycle 过期清理（如"只引用 3 年内报告"）</td></tr>
+<tr><td><span class="svc">Knowledge Bases</span></td><td>托管 RAG 全管道；citations 满足可溯源审计</td></tr>
+<tr><td><span class="svc">OpenSearch Serverless</span></td><td>向量索引 + 混合搜索 + 元数据过滤，千万级文档免集群管理</td></tr>
+<tr><td><span class="svc">Lambda</span> + <span class="svc">API Gateway</span></td><td>serverless 查询入口，自动扩到万级并发</td></tr>
+<tr><td><span class="svc">Guardrails</span></td><td>contextual grounding 校验回答忠于检索内容；按用户角色（Cognito 组）动态选不同 PII 策略</td></tr>
+<tr><td><span class="svc">DynamoDB</span></td><td>会话历史/用户上下文存储，毫秒级读写、on-demand 扩容、SSE 加密</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout solve"><span class="tag">解决</span>幻觉（只基于企业数据回答）、可审计（每条答案带引用）、知识新鲜（重摄取即更新）、权限隔离（每租户一个 KB + IAM，或 Q Business ACL）。变体：<strong>GraphRAG</strong>（Neptune Analytics）解决"投资工具↔板块↔监管"这类多跳关系问答；<strong>Hybrid Search</strong> 解决法律法条/医学缩写的精确召回。</div>
+
+<h3 id="s3-2">3.2 模式二：企业级 Agent / 多智能体系统</h3>
+
+<div class="callout problem"><span class="tag">问题</span>业务需要 AI 不只回答、还要"办事"：查订单、建工单、跨多部门（临床/保险/预约/理赔）协作，且每个部门数据必须隔离、行为必须可审计。</div>
+
+<div class="card">
+<h4>架构组成与数据流</h4>
+<div class="flow">用户 → <span class="hl">API Gateway</span>/<span class="hl">AppSync</span> → <span class="hl">Supervisor Agent</span>(意图分类+路由)
+   ├→ Collaborator A（临床）→ 专属 Knowledge Base + Action Group(内部 API)
+   ├→ Collaborator B（理赔）→ 专属 Knowledge Base + Action Group(Lambda)
+   └→ <span class="hl">AgentCore</span>(记忆/身份/事件) · <span class="hl">Guardrails</span> · <span class="hl">Tracing</span> 全程伴随</div>
+<table>
+<thead><tr><th>服务</th><th>在方案中的职责</th></tr></thead>
+<tbody>
+<tr><td><span class="svc">Bedrock Agents</span>（Supervisor + Collaborator）</td><td>意图路由与领域执行；新部门 = 新 collaborator，无需重构</td></tr>
+<tr><td><span class="svc">AgentCore</span></td><td>托管记忆、会话感知推理、身份与事件驱动执行</td></tr>
+<tr><td><span class="svc">Action Groups / Lambda</span></td><td>工具封装；Lambda 执行实际业务调用</td></tr>
+<tr><td><span class="svc">API Gateway + EventBridge</span></td><td>同步请求与事件驱动两种调用模式的注册入口</td></tr>
+<tr><td><span class="svc">IAM</span>（每 KB 独立授权）</td><td>部门级数据隔离，杜绝跨部门泄露</td></tr>
+<tr><td><span class="svc">Agents Tracing</span></td><td>每步推理与工具调用可见、可审计</td></tr>
+<tr><td><span class="svc">Step Functions</span>（可选）</td><td>对需要确定性/人工审批的关键路径做硬编排（waitForTaskToken 挂起等审批）</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout solve"><span class="tag">解决</span>从"问答"到"执行"的跨越；多租户/多部门的<strong>数据隔离与可扩展性</strong>；agent 行为的<strong>可控</strong>（工具权限边界）与<strong>可审计</strong>（trace）。何时不用 agent：流程完全确定的任务用 Step Functions / Flows 更便宜、更可预测——agent 留给真正需要动态决策的场景。</div>
+
+<h3 id="s3-3">3.3 模式三：实时流式交互（语音助手 / 逐字对话）</h3>
+
+<div class="callout problem"><span class="tag">问题</span>呼叫中心坐席助手要求边说边转写、端到端 &lt;1 秒给出建议；C 端聊天要求逐字出现、数千并发长连接、响应长达 15–45 秒不能用请求-响应硬等。</div>
+
+<div class="card">
+<h4>架构组成与数据流</h4>
+<div class="flow">语音流 → <span class="hl">Transcribe Streaming</span>(partial results) → <span class="hl">InvokeModelWithResponseStream</span>
+文本流 → <span class="hl">API Gateway WebSocket API</span> ⇄ <span class="hl">Lambda</span> → 逐 token 推送到坐席/用户端</div>
+<table>
+<thead><tr><th>服务</th><th>在方案中的职责</th></tr></thead>
+<tbody>
+<tr><td><span class="svc">Transcribe Streaming</span></td><td>partial results 在说话人未说完时输出片段——亚秒链路的第一环</td></tr>
+<tr><td><span class="svc">Bedrock 流式 API</span></td><td>token 级输出，生成一点推一点</td></tr>
+<tr><td><span class="svc">API Gateway WebSocket</span></td><td>托管双向长连接，服务端主动推送，天然支撑高并发</td></tr>
+<tr><td><span class="svc">Lambda Response Streaming</span></td><td>HTTP 场景下把部分响应即时吐给客户端</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout solve"><span class="tag">解决</span><strong>感知延迟</strong>（首 token 快 = 体验快，哪怕总时长不变）与<strong>双向实时性</strong>（替代低效轮询）。反模式：batch 转写用于实时、前端持 IAM 凭证直连 Bedrock、100ms 轮询假装流式。</div>
+
+<h3 id="s3-4">3.4 模式四：文档智能处理管道（Intelligent Document Processing）</h3>
+
+<div class="callout problem"><span class="tag">问题</span>每日万级扫描件/PDF/视频涌入（贷款申请、财报、培训素材），要结构化抽取、去 PII、生成摘要与嵌入入库，且低置信内容要转人工。</div>
+
+<div class="card">
+<h4>架构组成与数据流</h4>
+<div class="flow">S3 上传事件 → <span class="hl">Step Functions</span> 编排：
+  ├ 文档: <span class="hl">Textract</span>(结构化抽取+置信度) → 低置信 → <span class="hl">A2I</span> 人工复核
+  ├ 音视频: <span class="hl">Transcribe</span> 转写        文本: <span class="hl">Comprehend</span>(PII redaction/毒性/分类)
+  └ 多模态大规模: <span class="hl">BDA</span> 统一编排 → <span class="hl">Bedrock</span> 生成摘要/嵌入 → 向量库</div>
+<table>
+<thead><tr><th>服务</th><th>在方案中的职责</th></tr></thead>
+<tbody>
+<tr><td><span class="svc">Textract</span></td><td>扫描表单/表格结构化抽取，输出字段置信度</td></tr>
+<tr><td><span class="svc">Amazon A2I</span></td><td>human-in-the-loop：低置信样本路由人工，结果回流</td></tr>
+<tr><td><span class="svc">Comprehend</span></td><td>PII 检测与 redaction（必须脱敏不是只检测）、toxicity、prompt safety 分类——多个检测并行调用避免串行延迟</td></tr>
+<tr><td><span class="svc">BDA</span></td><td>多模态（文档+音视频）统一处理编排</td></tr>
+<tr><td><span class="svc">Glue</span>（可选前置）</td><td>大规模数据准备：crawler 编目入 Data Catalog（可审计元数据）、ETL 自定义分块、Data Quality 规则与指标</td></tr>
+<tr><td><span class="svc">Step Functions</span></td><td>并行编排（Parallel/Map）、重试、审计轨迹</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout solve"><span class="tag">解决</span>非结构化数据的<strong>工业化入口</strong>：专用服务各司其职（选错服务是最大陷阱——Macie 只做静态发现、Rekognition 管图像审核、Textract 管结构抽取），人在环上兜底质量，全程事件驱动、可审计。</div>
+
+<h3 id="s3-5">3.5 模式五：企业搜索与开箱即用助手（Amazon Q Business）</h3>
+
+<div class="callout problem"><span class="tag">问题</span>不想写代码就想要一个企业级 AI 助手：接 S3/SharePoint/Salesforce 等 40+ 数据源，且必须按员工身份过滤"你能看什么"（文档级 ACL）。</div>
+
+<div class="card">
+<h4>关键机制</h4>
+<ul>
+<li><span class="svc">Amazon Q Business</span>：全托管企业助手，内置检索、对话与插件。</li>
+<li><strong>文档级 ACL</strong>：S3 数据源配<strong>单一 acl.json</strong>（S3 前缀 → <span class="svc">IAM Identity Center</span> 组映射），查询时按用户身份过滤——IAM 权限策略替代不了这个机制。</li>
+<li><strong>Data Accessor</strong>：数据留在客户侧，授权第三方（如 ISV）受控、可撤销、可审计地检索——解决"数据所有权归客户、能力由厂商提供"的多方协作。</li>
+</ul>
+</div>
+<div class="callout solve"><span class="tag">解决</span>"零开发上线企业助手"与<strong>权限感知检索</strong>（AI 不能成为越权看数据的旁路）。与 Kendra 的区别：Kendra 偏传统智能搜索/FAQ，Q Business 是 GenAI 原生助手。</div>
+
+<h3 id="s3-6">3.6 模式六：AI 编码助手治理（Amazon Q Developer）</h3>
+
+<div class="callout problem"><span class="tag">问题</span>全员用 AI 写代码后，如何强制新团队使用公司批准的内部库、算法与代码规范，且不能要求每个项目手工加配置文件？</div>
+
+<div class="card">
+<h4>关键机制</h4>
+<ul>
+<li><span class="svc">Amazon Q Developer Pro</span>：IDE 内的代码建议、单测生成、代码审查、转型（如 Java 升级）。</li>
+<li><strong>Customization</strong>：用内部代码库训练专属定制层，建议自动对齐公司规范；<strong>集中管理、跨项目生效、更新自动传播</strong>——这正是"不做项目级修改"的解法（项目内 rules 目录都依赖开发者自觉，无法强制）。</li>
+<li><strong>IP 保护与引用追踪</strong>：建议附带来源引用，管理员可屏蔽疑似开源许可证冲突的建议。</li>
+</ul>
+</div>
+<div class="callout solve"><span class="tag">解决</span>AI 编码的<strong>标准化与合规</strong>：让 AI 学公司自己的代码，而不是让公司迁就 AI 的通用习惯。</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2 id="s4">4. 八大企业级横切关注点：每个维度由什么服务解决什么问题</h2>
+
+<h3 id="s4-1">4.1 安全与访问控制（Security & Access Control）</h3>
+
+<table>
+<thead><tr><th>关切</th><th>服务/机制</th><th>怎么解决</th></tr></thead>
+<tbody>
+<tr><td>谁能调模型、调哪个模型</td><td><span class="svc">IAM</span> + <strong>条件键</strong></td><td>策略锁定 <code>ModelId</code> / <code>GuardrailIdentifier</code>——"只能用获批模型、必须带护栏"</td></tr>
+<tr><td>大规模按部门授权</td><td><strong>IAM ABAC</strong></td><td>按标签属性（部门/角色）授权，人员变动不改策略</td></tr>
+<tr><td>组织级硬边界</td><td><span class="svc">AWS Organizations SCP</span></td><td>优先级高于一切 IAM 授权（AdministratorAccess 也过不去）；可校验请求参数，强制 guardrail 使用</td></tr>
+<tr><td>流量不出私网</td><td><span class="svc">Interface VPC Endpoint (PrivateLink)</span></td><td>Bedrock runtime 私网调用；<code>aws:sourceVpce</code> 条件键锁定批准端点；NAT/公网端点一律不合规</td></tr>
+<tr><td>加密</td><td><span class="svc">KMS</span></td><td>S3/DynamoDB/日志/向量库 CMK 静态加密；TLS 传输加密；<strong>Bedrock 承诺不用客户数据训练基础模型</strong></td></tr>
+<tr><td>用户级身份</td><td><span class="svc">Cognito</span> / SAML 联合（Entra ID）</td><td>C 端用户池 + 组（角色化 PII 策略）；企业 IdP 经 SAML 映射 IAM 角色</td></tr>
+<tr><td>数据湖细粒度授权</td><td><span class="svc">Lake Formation</span> LF-Tags</td><td><strong>列级</strong>、跨账号授权（S3 bucket policy 做不到列级）；FM 只读脱敏列子集</td></tr>
+</tbody>
+</table>
+
+<h3 id="s4-2">4.2 合规与数据驻留（Compliance & Data Residency）</h3>
+
+<table>
+<thead><tr><th>关切</th><th>服务/机制</th><th>怎么解决</th></tr></thead>
+<tbody>
+<tr><td>数据不出指定地理范围</td><td><strong>地理范围 CRI Profile</strong>（如 <code>eu-*</code>）</td><td>推理只在 EU Region 内路由；SCP 显式放行该 profile = 治理与驻留兼得</td></tr>
+<tr><td>区域隔离处理</td><td><span class="svc">S3</span> 区域桶策略 + 同 Region 预处理</td><td>数据在来源 Region 先处理再推理，禁止跨区流动</td></tr>
+<tr><td>不可篡改留存（WORM）</td><td><span class="svc">S3 Object Lock</span></td><td>合规期内数据/日志不可删改</td></tr>
+<tr><td>静态敏感数据发现</td><td><span class="svc">Macie</span></td><td>持续扫描 S3 中的 PII/金融数据并出报告（注意：是发现，不是实时过滤）</td></tr>
+<tr><td>数据血缘与注册</td><td><span class="svc">Glue Data Catalog</span></td><td>数据源统一注册、标签归因、血缘追踪——"输出可追溯到哪个源"</td></tr>
+<tr><td>审计证据链</td><td><span class="svc">CloudTrail</span> / <span class="svc">CloudTrail Lake</span></td><td>API 级"谁、何时、调了什么"；Lake 提供长期可查询的跨账号集中审计</td></tr>
+<tr><td>交互内容留痕</td><td><strong>Model Invocation Logging</strong></td><td>prompt/response（含图片）投递 S3 或 CloudWatch——金融/医疗审计必需</td></tr>
+<tr><td>框架映射</td><td colspan="2">GDPR（驻留/被遗忘权）、HIPAA、SOC 2、ISO/IEC 42001（AI 管理体系）；Guardrails + 上述证据链共同构成应答材料</td></tr>
+</tbody>
+</table>
+
+<h3 id="s4-3">4.3 内容安全与 Responsible AI</h3>
+
+<ul>
+<li><strong>纵深防御</strong>：输入侧 Comprehend（并行跑 toxicity + prompt safety + PII redaction）→ 推理侧 Guardrails（双侧内联）→ 输出侧 grounding 校验。Guardrails 指标（<code>InvocationsIntervened</code> 等）直连 CloudWatch 做干预率告警与公平性监测。</li>
+<li><strong>防提示注入</strong>：prompt attack 过滤器设 high + guardrail profile 保证跨区域一致 + CloudWatch Logs 记录每次干预事件（CloudTrail 只有 API 级，粒度不够）。</li>
+<li><strong>Responsible AI 六维</strong>工具映射：fairness → <span class="svc">SageMaker Clarify</span>（<strong>离线</strong>偏差分析，不是实时监控）；hallucination → grounding；privacy → PII + KMS；auditability → CloudTrail + invocation logging；provenance → 数字水印 / C2PA 内容凭证。</li>
+<li><strong>人工兜底</strong>：<span class="svc">Amazon A2I</span> 按置信度路由高风险交互；或 <span class="svc">Step Functions</span> <code>waitForTaskToken</code> 挂起工作流等人工审批（SendTaskSuccess 继续），审批记录落 DynamoDB 可审计。</li>
+</ul>
+
+<h3 id="s4-4">4.4 解决方案工程化（Engineering / GenAIOps）</h3>
+
+<table>
+<thead><tr><th>环节</th><th>服务/机制</th><th>要点</th></tr></thead>
+<tbody>
+<tr><td>基础设施即代码</td><td><span class="svc">CloudFormation</span> / CDK + <strong>CloudFormation Guard</strong></td><td>模板集中版本化；<strong>Guard 放在 CI/CD 预部署阶段</strong>做预防性合规（部署后检查 = 违规已上线）</td></tr>
+<tr><td>CI/CD 质量门禁</td><td><span class="svc">CodePipeline</span> + Bedrock Evaluation</td><td>prompt/模型变更自动触发评估，数值指标不达标阻断发布</td></tr>
+<tr><td>金丝雀发布</td><td><span class="svc">EventBridge</span> → <span class="svc">Step Functions</span> → <span class="svc">CloudWatch</span></td><td>分阶段切流 → 观察指标 → 健康增量/恶化<strong>自动回滚</strong>，零人工</td></tr>
+<tr><td>动态配置</td><td><span class="svc">AppConfig</span></td><td>模型路由规则/feature flag/A-B 测试免重部署；JSON schema 校验 + 分阶段 rollout + 自动回滚 + Agent 本地缓存（Parameter Store 无这些能力）</td></tr>
+<tr><td>工作流编排</td><td><span class="svc">Step Functions</span> Standard</td><td>长流程持久状态、重试、执行历史；Parallel/Map 并行化独立推理；<strong>256KB 状态配额</strong>——大中间产物存 S3 只传引用</td></tr>
+<tr><td>MLOps 自动重训练</td><td>S3 事件 → <span class="svc">Lambda</span> → Step Functions → <span class="svc">SageMaker Pipelines</span></td><td>数据到达即触发训练→评估→注册→部署管道</td></tr>
+<tr><td>Prompt 资产治理</td><td><span class="svc">Prompt Management</span></td><td>版本化 + 审批 + 变量参数化 + CloudTrail 审计，防 prompt drift</td></tr>
+</tbody>
+</table>
+
+<h3 id="s4-5">4.5 响应时间与性能优化（Latency & Performance）</h3>
+
+<table>
+<thead><tr><th>手段</th><th>机制</th><th>适用与陷阱</th></tr></thead>
+<tbody>
+<tr><td><strong>流式输出</strong></td><td>InvokeModelWithResponseStream / ConverseStream / Lambda streaming / WebSocket</td><td>降"感知延迟"首选；长响应必备</td></tr>
+<tr><td><strong>Provisioned Throughput</strong></td><td>预留 Model Units，消除限流与排队抖动</td><td>稳定高吞吐；⚠️必须用预置模型 ARN 调用</td></tr>
+<tr><td><strong>Latency-Optimized</strong></td><td><code>PerformanceConfigLatency=optimized</code></td><td>零架构改动降延迟</td></tr>
+<tr><td><strong>并行化</strong></td><td>Step Functions Parallel/Map</td><td>独立调用串行 45s → 并行 10s；唯一治本手段</td></tr>
+<tr><td><strong>Token Batching</strong></td><td>合并请求降低 API 开销</td><td>轻量模型高并发场景</td></tr>
+<tr><td><strong>智能路由</strong></td><td>Intelligent Prompt Routing / AppConfig 按客户等级切模型</td><td>简单问题小模型 = 又快又省</td></tr>
+<tr><td><strong>缓存</strong></td><td>ElastiCache / DynamoDB 缓存响应</td><td>⚠️仅高重复场景有效；交互大多为唯一时缓存是错误答案</td></tr>
+<tr><td><strong>检索侧优化</strong></td><td>rerank、metadata filtering、合理分块</td><td>检索质量差时换大模型/升维度是陷阱</td></tr>
+</tbody>
+</table>
+
+<h3 id="s4-6">4.6 韧性与灾难降级（Resilience & Graceful Degradation）</h3>
+
+<ul>
+<li><strong>区域性故障/限流降级</strong>：<strong>Cross-Region Inference Profile</strong> 在同地理范围内自动把流量转移到可用 Region——免自建 failover 逻辑、无固定成本，是 Bedrock 原生的"灾难降级"方案。</li>
+<li><strong>重试三件套</strong>：<strong>指数退避 + Jitter + Circuit Breaker（熔断器）</strong>。固定延迟重试会造成同步重试风暴；熔断器在错误率超阈值时暂停重试，防止压垮服务、实现优雅降级。流式场景缓冲已收 chunk、断点续传。</li>
+<li><strong>追踪定位</strong>：<span class="svc">X-Ray</span> 全链路追踪 + annotations 标注模型特征（model ID/参数/Region），按模型维度关联延迟问题。</li>
+<li><strong>发布级回滚</strong>：AppConfig 自动回滚（配置错误）+ Step Functions 金丝雀回滚（版本错误）+ Prompt Management 版本回退（prompt 错误）——三层回滚覆盖三类变更。</li>
+<li><strong>SageMaker 侧</strong>（自托管模型时）：最小实例数 &gt;0 消灭冷启动、模型预热、动态批处理；异步推理只用于非交互负载。</li>
+</ul>
+
+<h3 id="s4-7">4.7 上下文与记忆管理（Context & Memory）</h3>
+
+<table>
+<thead><tr><th>层次</th><th>方案</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td><strong>单次对话内</strong></td><td>Converse API <code>messages</code> 数组</td><td>上下文显式随请求传递，无服务端状态；跨 SDK/计算环境一致</td></tr>
+<tr><td><strong>跨会话持久</strong></td><td><span class="svc">DynamoDB</span> 会话存储</td><td>毫秒级读写、on-demand 扩容、SSE 加密；ElastiCache 只是缓存不能当持久层</td></tr>
+<tr><td><strong>Agent 记忆</strong></td><td>Agents Memory / <span class="svc">AgentCore</span></td><td>会话内默认开启；跨会话长期记忆可配保留天数</td></tr>
+<tr><td><strong>长流程状态</strong></td><td><span class="svc">Step Functions</span> Standard + 回调令牌</td><td>澄清式对话"等待用户补充输入"时挂起不丢状态；超 256KB 的产物外置 S3</td></tr>
+<tr><td><strong>上下文窗口</strong></td><td>语义分块 + 动态检索（RetrieveAndGenerate）</td><td>50–200 页文档超窗口：只把高相关 chunk 送入模型，而非整文档硬塞</td></tr>
+<tr><td><strong>知识上下文</strong></td><td>RAG / GraphRAG</td><td>用检索替代记忆——企业知识不进 prompt、不进权重，随取随新</td></tr>
+</tbody>
+</table>
+
+<h3 id="s4-8">4.8 跟踪与可观测性（Tracing & Observability）</h3>
+
+<table>
+<thead><tr><th>信号</th><th>服务</th><th>回答什么问题</th></tr></thead>
+<tbody>
+<tr><td><strong>调用明细</strong></td><td>Model Invocation Logging → <span class="svc">CloudWatch Logs</span> / S3</td><td>每个请求用了多少 token、prompt/response 是什么、护栏干预了没有</td></tr>
+<tr><td><strong>指标</strong></td><td><span class="svc">CloudWatch</span>（Invocations/InputTokenCount/OutputTokenCount/InvocationThrottles）+ <strong>Metric Filters</strong> + <strong>EMF</strong> 自定义指标</td><td>用量趋势、成本分摊（按业务单元/工具维度切片）</td></tr>
+<tr><td><strong>异常检测</strong></td><td>CloudWatch <strong>Anomaly Detection</strong></td><td>动态基线："token 突增/质量漂移/成本异常"自动发现——静态阈值做不到"随流量自动调整"</td></tr>
+<tr><td><strong>应用关联</strong></td><td>CloudWatch <strong>Application Insights</strong> + <span class="svc">Logs Insights</span></td><td>指标日志关联根因；10 分钟内带关联数据的告警</td></tr>
+<tr><td><strong>分布式追踪</strong></td><td><span class="svc">X-Ray</span>（annotations 标模型特征）</td><td>延迟到底耗在 API Gateway、Lambda 还是 Bedrock</td></tr>
+<tr><td><strong>API 审计</strong></td><td><span class="svc">CloudTrail</span> / CloudTrail Lake</td><td>谁、何时、从哪调用了什么（注意：不是追踪工具，也没有 prompt 内容）</td></tr>
+<tr><td><strong>Agent 推理轨迹</strong></td><td>Agents Tracing</td><td>agent 每步想了什么、调了什么工具——监管"展示推理过程"的依据</td></tr>
+<tr><td><strong>多角色看板</strong></td><td>CloudWatch Dashboards / <span class="svc">Managed Grafana</span>（zero-ETL）</td><td>运维看实时、财务看成本、合规看干预率</td></tr>
+</tbody>
+</table>
+
+<!-- ==================== Section 5 ==================== -->
+<h2 id="s5">5. 服务速查总表：一个服务一句话</h2>
+
+<table>
+<thead><tr><th>服务</th><th>分层</th><th>一句话职责</th><th>解决的核心问题</th></tr></thead>
+<tbody>
+<tr><td><strong>Amazon Bedrock</strong></td><td>GenAI 中枢</td><td>多厂商 FM 的统一托管 API 与 GenAI 原语集</td><td>免管 GPU/模型托管</td></tr>
+<tr><td><strong>Knowledge Bases</strong></td><td>GenAI 中枢</td><td>全托管 RAG（摄取→分块→嵌入→检索→引用）</td><td>幻觉、知识时效、可溯源</td></tr>
+<tr><td><strong>Agents / AgentCore</strong></td><td>GenAI 中枢</td><td>工具调用型智能体与托管运行时</td><td>从问答到执行；记忆与身份</td></tr>
+<tr><td><strong>Guardrails</strong></td><td>安全</td><td>推理双侧内联内容安全策略层</td><td>有害内容、PII、注入、幻觉</td></tr>
+<tr><td><strong>Flows</strong></td><td>编排</td><td>可视化托管 GenAI 工作流</td><td>免胶水代码的多步流程</td></tr>
+<tr><td><strong>Prompt Management</strong></td><td>工程化</td><td>Prompt 版本 + 审批 + 参数化</td><td>prompt 资产治理与一致性</td></tr>
+<tr><td><strong>Model Evaluation</strong></td><td>工程化</td><td>托管评估（LLM-as-a-judge）</td><td>质量量化与发布门禁</td></tr>
+<tr><td><strong>Bedrock Data Automation</strong></td><td>数据</td><td>多模态语料自动处理</td><td>PDF/音视频进 RAG</td></tr>
+<tr><td><strong>OpenSearch Serverless</strong></td><td>数据</td><td>向量+关键词混合搜索，免集群</td><td>大规模检索与元数据过滤</td></tr>
+<tr><td><strong>Aurora pgvector</strong></td><td>数据</td><td>关系库内向量检索</td><td>中小规模、向量元数据同库</td></tr>
+<tr><td><strong>MemoryDB</strong></td><td>数据</td><td>内存级向量库（HNSW）</td><td>小数据集极致召回与微秒延迟</td></tr>
+<tr><td><strong>Neptune Analytics</strong></td><td>数据</td><td>图分析引擎（GraphRAG 底座）</td><td>多跳实体关系问答</td></tr>
+<tr><td><strong>S3</strong></td><td>数据</td><td>语料/日志/状态对象存储</td><td>版本、生命周期、Object Lock 留存</td></tr>
+<tr><td><strong>DynamoDB</strong></td><td>数据</td><td>会话/审计/成本明细 KV 存储</td><td>毫秒级状态、TTL 留存策略</td></tr>
+<tr><td><strong>Glue</strong></td><td>数据</td><td>编目 + ETL + Data Quality</td><td>数据准备、血缘、质量指标</td></tr>
+<tr><td><strong>Lake Formation</strong></td><td>安全</td><td>数据湖列级授权（LF-Tags）</td><td>FM 只读授权列子集</td></tr>
+<tr><td><strong>Lambda</strong></td><td>编排</td><td>serverless 计算胶水</td><td>零运维业务逻辑与 token 预估</td></tr>
+<tr><td><strong>Step Functions</strong></td><td>编排</td><td>状态机编排（Standard/Express）</td><td>并行、审批挂起、金丝雀、审计</td></tr>
+<tr><td><strong>API Gateway</strong></td><td>接入</td><td>REST/HTTP/WebSocket 前门</td><td>认证限流 + 双向流式推送</td></tr>
+<tr><td><strong>AppSync / Amplify</strong></td><td>接入</td><td>GraphQL 与前端工具链（AI Kit）</td><td>订阅式实时协作、流式 UI</td></tr>
+<tr><td><strong>AppConfig</strong></td><td>工程化</td><td>动态配置与 feature flags</td><td>免部署改行为、A/B、回滚</td></tr>
+<tr><td><strong>IAM / SCP / KMS / PrivateLink</strong></td><td>安全</td><td>身份、边界、加密、私网</td><td>最小权限与数据不出界</td></tr>
+<tr><td><strong>Cognito</strong></td><td>安全</td><td>用户池与组、OAuth 2.1</td><td>用户级授权与角色化策略</td></tr>
+<tr><td><strong>Macie</strong></td><td>安全</td><td>S3 敏感数据发现</td><td>静态 PII 盘点与报告</td></tr>
+<tr><td><strong>CloudTrail (Lake)</strong></td><td>可观测</td><td>API 审计与集中查询</td><td>合规证据链</td></tr>
+<tr><td><strong>CloudWatch</strong></td><td>可观测</td><td>指标/日志/告警/异常检测</td><td>成本、漂移、限流可视与告警</td></tr>
+<tr><td><strong>X-Ray</strong></td><td>可观测</td><td>分布式追踪</td><td>跨服务延迟根因定位</td></tr>
+<tr><td><strong>Amazon A2I</strong></td><td>可观测</td><td>人工复审工作流</td><td>高风险/低置信人工兜底</td></tr>
+<tr><td><strong>Textract / Comprehend / Transcribe / Rekognition</strong></td><td>数据</td><td>文档抽取 / 文本理解 / 语音转写 / 图像审核</td><td>专用 AI 预处理各司其职</td></tr>
+<tr><td><strong>Amazon Q Business</strong></td><td>开箱应用</td><td>权限感知企业助手</td><td>零开发上线 + 文档级 ACL</td></tr>
+<tr><td><strong>Amazon Q Developer</strong></td><td>开箱应用</td><td>AI 编码助手 + Customization</td><td>编码提效与规范统一</td></tr>
+<tr><td><strong>SageMaker</strong></td><td>自托管补充</td><td>自训模型托管/Pipelines/Neo/Clarify</td><td>Bedrock 之外的定制 ML 全生命周期</td></tr>
+</tbody>
+</table>
+
+<blockquote><strong>一句话总结</strong>：Bedrock 提供"大脑"（模型与 GenAI 原语），数据层提供"记忆"（向量库与状态），编排层提供"神经"（工作流与事件），安全治理层提供"免疫系统"（边界、护栏、审计），可观测层提供"眼睛"（指标、追踪、人工兜底）。企业级 = 这五者缺一不少。</blockquote>
+
+</main>
+</div>
+<script>
+const links=document.querySelectorAll('nav.toc a');
+const secs=[...document.querySelectorAll('h2[id],h3[id]')];
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  links.forEach(l=>{l.style.borderLeftColor='transparent';l.style.background=''});
+  const a=document.querySelector('nav.toc a[href="#'+e.target.id+'"]');
+  if(a){a.style.borderLeftColor='#ec7211';a.style.background='#fff3e6'}}})},
+ {rootMargin:'-80px 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

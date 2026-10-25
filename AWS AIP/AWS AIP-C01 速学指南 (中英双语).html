@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AWS AIP-C01 速学指南 · 中英双语</title>
+<style>
+:root {
+  --brand: #232f3e; --accent: #ec7211; --accent2: #1a73e8;
+  --bg: #f6f7f9; --card: #ffffff; --ink: #1f2430; --muted: #5b6472;
+  --line: #e3e6ea; --gold: #b7791f; --silver: #4a5568; --bronze: #8c5a2b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Microsoft YaHei", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.75; font-size: 15.5px;
+}
+/* ---------- Top bar ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 50; background: var(--brand); color: #fff;
+  padding: 10px 24px; display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+.topbar .logo { font-weight: 700; letter-spacing: .5px; font-size: 15px; }
+.topbar .logo span { color: var(--accent); }
+.topbar .meta { font-size: 12.5px; color: #c9d2dd; margin-left: auto; }
+.topbar a { color: #ffd8a8; text-decoration: none; font-size: 12.5px; }
+/* ---------- Layout ---------- */
+.layout { display: flex; max-width: 1280px; margin: 0 auto; gap: 28px; padding: 24px; }
+nav.toc {
+  position: sticky; top: 76px; align-self: flex-start; width: 250px; flex: 0 0 250px;
+  max-height: calc(100vh - 96px); overflow-y: auto; background: var(--card);
+  border: 1px solid var(--line); border-radius: 12px; padding: 16px 14px; font-size: 13px;
+}
+nav.toc .toc-title { font-weight: 700; font-size: 13px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc > ul > li { margin: 6px 0; }
+nav.toc a { color: var(--ink); text-decoration: none; display: block;
+  padding: 3px 8px; border-radius: 6px; border-left: 3px solid transparent; }
+nav.toc a:hover { background: #fff3e6; color: var(--accent); }
+nav.toc ul ul a { color: var(--muted); padding-left: 18px; font-size: 12.5px; }
+nav.toc ul ul a:hover { color: var(--accent); }
+main.content {
+  flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 40px 48px;
+}
+/* ---------- Typography ---------- */
+h1 {
+  font-size: 26px; line-height: 1.35; color: var(--brand); margin: 34px 0 6px;
+  padding-bottom: 12px; border-bottom: 3px solid var(--accent);
+}
+h1:first-of-type { margin-top: 0; }
+h1 + h1 { border-bottom: none; margin-top: 0; font-size: 20px; color: var(--muted); font-weight: 600;}
+h2 {
+  font-size: 20px; color: var(--brand); margin: 36px 0 12px;
+  padding: 8px 14px; background: linear-gradient(90deg,#fff3e6,transparent);
+  border-left: 5px solid var(--accent); border-radius: 0 8px 8px 0;
+}
+h3 { font-size: 17px; color: var(--brand); margin: 26px 0 8px; }
+h3::before { content: "▸ "; color: var(--accent); }
+p { margin: 8px 0; }
+strong { color: #0f1c2e; }
+a { color: var(--accent2); word-break: break-all; }
+blockquote {
+  margin: 14px 0; padding: 12px 18px; background: #f0f7ff; border-left: 4px solid var(--accent2);
+  border-radius: 0 8px 8px 0; color: #33415c;
+}
+hr { border: none; border-top: 1px dashed var(--line); margin: 30px 0; }
+li { margin: 3px 0; }
+ul, ol { padding-left: 24px; }
+code {
+  background: #f1f3f6; padding: 1.5px 6px; border-radius: 5px; font-size: 13.5px;
+  font-family: "SF Mono", Menlo, Consolas, monospace; color: #c0341d;
+}
+/* ---------- Tier badges ---------- */
+h2.tier { border-left: none; background: none; padding: 0; }
+h2.tier::before {
+  display: inline-block; font-size: 12px; font-weight: 800; color: #fff;
+  padding: 3px 12px; border-radius: 20px; margin-right: 10px; vertical-align: 4px;
+  letter-spacing: .5px;
+}
+h2.tier1::before { content: "TIER 1 · 必考"; background: linear-gradient(135deg,#e53e3e,#dd6b20); }
+h2.tier2::before { content: "TIER 2 · 高频"; background: linear-gradient(135deg,#2b6cb0,#2c7a7b); }
+h2.tier3::before { content: "TIER 3 · 常见"; background: linear-gradient(135deg,#718096,#4a5568); }
+/* ---------- Tables ---------- */
+table {
+  border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 13.8px;
+  display: block; overflow-x: auto;
+}
+thead th {
+  background: var(--brand); color: #fff; text-align: left; padding: 9px 12px;
+  font-size: 13px; white-space: nowrap; position: sticky; top: 0;
+}
+tbody td { padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tbody tr:nth-child(even) { background: #f8f9fb; }
+tbody tr:hover { background: #fff7ec; }
+td.ans { text-align: center; white-space: nowrap; }
+td.ans strong {
+  display: inline-block; background: var(--accent); color: #fff; min-width: 26px;
+  padding: 2px 8px; border-radius: 14px; font-size: 13px; text-align: center;
+}
+/* ---------- Print ---------- */
+@media print {
+  .topbar, nav.toc { display: none; }
+  .layout { padding: 0; }
+  main.content { border: none; padding: 0; }
+  h1, h2, h3 { break-after: avoid; }
+  table, blockquote { break-inside: avoid; }
+  body { font-size: 12px; background: #fff; }
+}
+@media (max-width: 960px) {
+  nav.toc { display: none; }
+  main.content { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">AWS <span>AIP-C01</span> 速学指南</div>
+  <a href="https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html" target="_blank">官方考试指南 ↗</a>
+  <div class="meta">Generative AI Developer – Professional · 中英双语 · 基于 107 题题库</div>
+</div>
+<div class="layout">
+  <nav class="toc"><div class="toc-title">目录 Contents</div><ul><li><a href="#aws-certified-generative-ai-developer-professional-aip-c01-速学指南"><b>AWS Certified Generative AI Developer – Professional (AIP-C01) 速学指南</b></a><ul></ul></li><li><a href="#rapid-study-guide-中英双语版-bilingual-edition"><b>Rapid Study Guide — 中英双语版 / Bilingual Edition</b></a><ul><li><a href="#如何使用本指南-how-to-use-this-guide">如何使用本指南 / How to Use This Guide</a></li></ul></li><li><a href="#第一部分考试概览-part-1-exam-overview"><b>第一部分：考试概览 / Part 1: Exam Overview</b></a><ul><li><a href="#领域权重-domain-weighting官方考试指南">领域权重 / Domain Weighting（官方考试指南）</a></li></ul></li><li><a href="#第二部分五大领域总章概要-part-2-domain-summaries"><b>第二部分：五大领域总章概要 / Part 2: Domain Summaries</b></a><ul><li><a href="#领域-1基础模型集成数据管理与合规31">领域 1：基础模型集成、数据管理与合规（31%）</a></li><li><a href="#domain-1-foundation-model-integration-data-management-and-compliance-31">Domain 1: Foundation Model Integration, Data Management, and Compliance (31%)</a></li><li><a href="#领域-2实施与集成26">领域 2：实施与集成（26%）</a></li><li><a href="#domain-2-implementation-and-integration-26">Domain 2: Implementation and Integration (26%)</a></li><li><a href="#领域-3ai-安全保障与治理20">领域 3：AI 安全、保障与治理（20%）</a></li><li><a href="#domain-3-ai-safety-security-and-governance-20">Domain 3: AI Safety, Security, and Governance (20%)</a></li><li><a href="#领域-4运营效率与优化12">领域 4：运营效率与优化（12%）</a></li><li><a href="#domain-4-operational-efficiency-and-optimization-12">Domain 4: Operational Efficiency and Optimization (12%)</a></li><li><a href="#领域-5测试验证与故障排除11">领域 5：测试、验证与故障排除（11%）</a></li><li><a href="#domain-5-testing-validation-and-troubleshooting-11">Domain 5: Testing, Validation, and Troubleshooting (11%)</a></li></ul></li><li><a href="#第三部分核心知识点详解按重要性排序"><b>第三部分：核心知识点详解（按重要性排序）</b></a><ul></ul></li><li><a href="#part-3-core-knowledge-points-ranked-by-importance"><b>Part 3: Core Knowledge Points (Ranked by Importance)</b></a><ul></ul></li><li><a href="#第四部分107-题速查表按领域分组"><b>第四部分：107 题速查表（按领域分组）</b></a><ul></ul></li><li><a href="#part-4-question-quick-reference-grouped-by-domain"><b>Part 4: Question Quick-Reference (Grouped by Domain)</b></a><ul><li><a href="#领域-1基础模型集成数据管理与合规-domain-1-27-题">领域 1：基础模型集成、数据管理与合规 / Domain 1 (27 题)</a></li><li><a href="#领域-2实施与集成-domain-2-21-题">领域 2：实施与集成 / Domain 2 (21 题)</a></li><li><a href="#领域-3ai-安全保障与治理-domain-3-24-题">领域 3：AI 安全、保障与治理 / Domain 3 (24 题)</a></li><li><a href="#领域-4运营效率与优化-domain-4-22-题">领域 4：运营效率与优化 / Domain 4 (22 题)</a></li><li><a href="#领域-5测试验证与故障排除-domain-5-11-题">领域 5：测试、验证与故障排除 / Domain 5 (11 题)</a></li></ul></li><li><a href="#第五部分资深专家补充-题库之外你必须掌握的考点"><b>第五部分：资深专家补充 —— 题库之外你必须掌握的考点</b></a><ul></ul></li><li><a href="#part-5-expert-supplements-beyond-the-107-questions"><b>Part 5: Expert Supplements — Beyond the 107 Questions</b></a><ul><li><a href="#s1-推理参数与输出确定性-inference-parameters-determinism-必补">S1. 推理参数与输出确定性 / Inference Parameters &amp; Determinism ⭐必补</a></li><li><a href="#s2-rag-vs-微调-vs-继续预训练-决策矩阵-rag-vs-fine-tuning-vs-continued-pre-training-必补">S2. RAG vs 微调 vs 继续预训练 决策矩阵 / RAG vs Fine-Tuning vs Continued Pre-Training ⭐必补</a></li><li><a href="#s3-bedrock-agents-深入-bedrock-agents-deep-dive">S3. Bedrock Agents 深入 / Bedrock Agents Deep Dive</a></li><li><a href="#s4-prompt-engineering-技术清单-prompt-engineering-checklist">S4. Prompt Engineering 技术清单 / Prompt Engineering Checklist</a></li><li><a href="#s5-负责任-ai-与合规框架-responsible-ai-compliance-frameworks">S5. 负责任 AI 与合规框架 / Responsible AI &amp; Compliance Frameworks</a></li><li><a href="#s6-数据安全与加密-data-security-encryption">S6. 数据安全与加密 / Data Security &amp; Encryption</a></li><li><a href="#s7-配额吞吐与成本计算-quotas-throughput-cost-math">S7. 配额、吞吐与成本计算 / Quotas, Throughput &amp; Cost Math</a></li><li><a href="#s8-rag-评估指标-rag-evaluation-metrics">S8. RAG 评估指标 / RAG Evaluation Metrics</a></li><li><a href="#s9-多模态与嵌入细节-multimodality-embedding-details">S9. 多模态与嵌入细节 / Multimodality &amp; Embedding Details</a></li><li><a href="#s10-十大考场陷阱-top-10-exam-traps">S10. 十大考场陷阱 / Top 10 Exam Traps</a></li></ul></li><li><a href="#第六部分备考策略与资源-part-6-exam-strategy-resources"><b>第六部分：备考策略与资源 / Part 6: Exam Strategy &amp; Resources</b></a><ul><li><a href="#学习路径-study-path">学习路径 / Study Path</a></li><li><a href="#关键词词典-keyword-dictionary">关键词词典 / Keyword Dictionary</a></li><li><a href="#官方资源-official-resources">官方资源 / Official Resources</a></li></ul></li></ul></nav>
+  <main class="content"><h1 id="aws-certified-generative-ai-developer-professional-aip-c01-速学指南">AWS Certified Generative AI Developer – Professional (AIP-C01) 速学指南</h1>
+<h1 id="rapid-study-guide-中英双语版-bilingual-edition">Rapid Study Guide — 中英双语版 / Bilingual Edition</h1>
+<blockquote>
+<p>基于 107 道真题题库整理 + 资深架构师视角补充。
+Based on a 107-question exam bank, plus senior-architect supplementary content.</p>
+</blockquote>
+<hr />
+<h2 id="如何使用本指南-how-to-use-this-guide">如何使用本指南 / How to Use This Guide</h2>
+<p><strong>中文</strong>：本指南按"考试概览 → 五大领域概要 → 核心知识点（按重要性排序）→ 逐题速查表 → 专家补充 → 备考策略"组织。每个知识点都给出<strong>应试信号</strong>（看到题目中的什么关键词，就该选什么答案），帮助你在考场上秒级定位答案。时间紧张时：先读 Tier 1 知识点 + 速查表，再扫 Tier 2/3。</p>
+<p><strong>English</strong>: This guide is organized as: Exam Overview → Domain Summaries → Core Knowledge Points (ranked by importance) → Question Quick-Reference → Expert Supplements → Exam Strategy. Every knowledge point includes <strong>exam signals</strong> (which keywords in a question point to which answer), so you can lock in answers in seconds. Short on time? Read Tier 1 + the quick-reference table first, then skim Tier 2/3.</p>
+<hr />
+<h1 id="第一部分考试概览-part-1-exam-overview">第一部分：考试概览 / Part 1: Exam Overview</h1>
+<table>
+<thead>
+<tr>
+<th>项目 Item</th>
+<th>内容 Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>考试代码 Exam Code</td>
+<td>AIP-C01（AWS Certified Generative AI Developer – Professional）</td>
+</tr>
+<tr>
+<td>时长 Duration</td>
+<td>180 分钟 / 180 minutes</td>
+</tr>
+<tr>
+<td>题量 Questions</td>
+<td>75 题（65 计分 + 10 不计分）/ 75 questions (65 scored + 10 unscored)</td>
+</tr>
+<tr>
+<td>题型 Format</td>
+<td>单选、多选 / Multiple choice &amp; multiple response</td>
+</tr>
+<tr>
+<td>通过分数 Passing Score</td>
+<td>750 / 1000</td>
+</tr>
+<tr>
+<td>费用 Cost</td>
+<td>$300 USD</td>
+</tr>
+<tr>
+<td>目标考生 Target</td>
+<td>2 年以上生产级应用开发经验 + 1 年以上 GenAI 实操经验 / 2+ yrs production dev + 1+ yr hands-on GenAI</td>
+</tr>
+</tbody>
+</table>
+<h2 id="领域权重-domain-weighting官方考试指南">领域权重 / Domain Weighting（官方考试指南）</h2>
+<table>
+<thead>
+<tr>
+<th>领域 Domain</th>
+<th>权重 Weight</th>
+<th>题库题数 Questions in Bank</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 基础模型集成、数据管理与合规 / Foundation Model Integration, Data Management, and Compliance</td>
+<td><strong>31%</strong></td>
+<td>27</td>
+</tr>
+<tr>
+<td>2. 实施与集成 / Implementation and Integration</td>
+<td><strong>26%</strong></td>
+<td>21</td>
+</tr>
+<tr>
+<td>3. AI 安全、保障与治理 / AI Safety, Security, and Governance</td>
+<td><strong>20%</strong></td>
+<td>24</td>
+</tr>
+<tr>
+<td>4. GenAI 应用的运营效率与优化 / Operational Efficiency and Optimization</td>
+<td><strong>12%</strong></td>
+<td>22</td>
+</tr>
+<tr>
+<td>5. 测试、验证与故障排除 / Testing, Validation, and Troubleshooting</td>
+<td><strong>11%</strong></td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>策略启示 / Strategy</strong>: 领域 1+2 合计 57%，是得分主战场；领域 3 的 Guardrails/IAM 题套路固定、最易提分；领域 4+5 题量少但模式化极强，背熟套路即可全收。
+Domains 1+2 = 57% of the exam — your main battlefield. Domain 3 follows fixed patterns (easy points). Domains 4+5 are few but highly formulaic.</p>
+</blockquote>
+<p><strong>官方考试指南 / Official Exam Guide</strong>: https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html</p>
+<hr />
+<h1 id="第二部分五大领域总章概要-part-2-domain-summaries">第二部分：五大领域总章概要 / Part 2: Domain Summaries</h1>
+<h2 id="领域-1基础模型集成数据管理与合规31">领域 1：基础模型集成、数据管理与合规（31%）</h2>
+<h2 id="domain-1-foundation-model-integration-data-management-and-compliance-31">Domain 1: Foundation Model Integration, Data Management, and Compliance (31%)</h2>
+<p><strong>中文概要</strong>：本领域考"如何把数据安全、合规地喂给基础模型"。核心是 <strong>RAG 全链路</strong>：数据源（S3）→ 预处理（Glue/Comprehend）→ 分块（chunking）→ 嵌入（Titan Embeddings）→ 向量库（OpenSearch Serverless / Aurora pgvector / MemoryDB / Neptune）→ 检索（hybrid search、元数据过滤、rerank、query decomposition、GraphRAG）→ 生成（RetrieveAndGenerate，带引用）。合规线考数据驻留（cross-Region inference profile 地理代码）、访问控制（Lake Formation 列级授权、IAM ABAC）、审计（CloudTrail、Glue Data Catalog 血缘、Macie 分类）。</p>
+<p><strong>English Summary</strong>: This domain tests "how to feed data to foundation models safely and compliantly." The core is the <strong>full RAG pipeline</strong>: data sources (S3) → preprocessing (Glue/Comprehend) → chunking → embeddings (Titan) → vector stores (OpenSearch Serverless / Aurora pgvector / MemoryDB / Neptune) → retrieval (hybrid search, metadata filtering, rerank, query decomposition, GraphRAG) → grounded generation (RetrieveAndGenerate with citations). The compliance thread covers data residency (geo-scoped cross-Region inference profiles), access control (Lake Formation column-level grants, IAM ABAC), and audit (CloudTrail, Glue Data Catalog lineage, Macie classification).</p>
+<p><strong>高频考点 / Hot Topics</strong>: Knowledge Bases 全托管 RAG、分块策略选择（固定/语义/分层）、混合搜索、GraphRAG（Neptune）、数据驻留、S3 元数据体系。</p>
+<h2 id="领域-2实施与集成26">领域 2：实施与集成（26%）</h2>
+<h2 id="domain-2-implementation-and-integration-26">Domain 2: Implementation and Integration (26%)</h2>
+<p><strong>中文概要</strong>：考"怎么把 GenAI 应用搭出来"。四大主线：① <strong>Bedrock API 选择</strong>——InvokeModel（一次性）vs InvokeModelWithResponseStream（流式）vs Converse/ConverseStream（多轮对话、跨模型统一接口）；② <strong>实时流式架构</strong>——API Gateway WebSocket、Lambda response streaming、Transcribe streaming partial results；③ <strong>多智能体</strong>——supervisor/collaborator 模式、AgentCore、MCP server（Streamable HTTP + OAuth 2.1）；④ <strong>编排与配置</strong>——Step Functions（Standard vs Express、Parallel/Map、waitForTaskToken、256KB 状态配额→S3 引用）、AppConfig（动态配置/feature flags/A/B 测试）、Bedrock Flows、Prompt Management。</p>
+<p><strong>English Summary</strong>: Tests "how to build GenAI applications." Four threads: ① <strong>Bedrock API selection</strong> — InvokeModel (one-shot) vs InvokeModelWithResponseStream (streaming) vs Converse/ConverseStream (multi-turn, model-agnostic); ② <strong>real-time streaming architectures</strong> — API Gateway WebSocket, Lambda response streaming, Transcribe streaming partial results; ③ <strong>multi-agent systems</strong> — supervisor/collaborator pattern, AgentCore, MCP servers (Streamable HTTP + OAuth 2.1); ④ <strong>orchestration &amp; configuration</strong> — Step Functions (Standard vs Express, Parallel/Map, waitForTaskToken, 256KB state quota → S3 references), AppConfig (dynamic config/feature flags/A-B testing), Bedrock Flows, Prompt Management.</p>
+<p><strong>高频考点 / Hot Topics</strong>: 流式 API 选型、WebSocket vs 轮询、supervisor 多智能体、Step Functions 状态管理、AppConfig 动态路由、Converse API 多轮上下文。</p>
+<h2 id="领域-3ai-安全保障与治理20">领域 3：AI 安全、保障与治理（20%）</h2>
+<h2 id="domain-3-ai-safety-security-and-governance-20">Domain 3: AI Safety, Security, and Governance (20%)</h2>
+<p><strong>中文概要</strong>：套路最固定、最好拿分的领域。一条主线：<strong>Bedrock Guardrails 六大能力</strong>——内容过滤（hate/sexual/violence/insults/misconduct/prompt attack，强度 low/medium/high）、denied topics（拒绝话题）、敏感信息过滤（PII：block/mask/detect，输入 vs 输出可不同动作）、自定义词过滤、contextual grounding（防幻觉）、guardrail profile（跨区域一致部署）。配合：IAM 条件键（强制 GuardrailIdentifier/ModelId）、SCP（Organizations 最强边界，优先于 IAM）、VPC endpoint/PrivateLink（私有访问）、CloudTrail + invocation logging（双层审计）、A2I/waitForTaskToken（人工兜底）。</p>
+<p><strong>English Summary</strong>: The most formulaic, easiest domain to score. One main thread: <strong>the six Bedrock Guardrails capabilities</strong> — content filters (hate/sexual/violence/insults/misconduct/prompt attack at low/medium/high strength), denied topics, sensitive information filters (PII: block/mask/detect, with different actions for input vs output), custom word filters, contextual grounding (anti-hallucination), and guardrail profiles (consistent cross-Region deployment). Plus: IAM condition keys (enforce GuardrailIdentifier/ModelId), SCPs (strongest Organizations boundary, evaluated before IAM), VPC endpoints/PrivateLink (private access), CloudTrail + invocation logging (two-layer audit), and A2I/waitForTaskToken (human-in-the-loop).</p>
+<p><strong>高频考点 / Hot Topics</strong>: block vs mask vs detect、denied topics vs word filters vs content filters 的分工、SCP + guardrail 集中治理、跨区域 guardrail 与数据驻留、提示注入纵深防御。</p>
+<h2 id="领域-4运营效率与优化12">领域 4：运营效率与优化（12%）</h2>
+<h2 id="domain-4-operational-efficiency-and-optimization-12">Domain 4: Operational Efficiency and Optimization (12%)</h2>
+<p><strong>中文概要</strong>：考"让 GenAI 应用更快、更省、更稳"。三组对立概念是全部考点：① <strong>On-Demand vs Provisioned Throughput</strong>（波动流量无固定成本 vs 稳定高吞吐有保障容量；用预置吞吐必须用返回的<strong>模型 ARN</strong> 调用！）；② <strong>限流治理</strong>——cross-Region inference profile 分摊流量、指数退避+jitter 重试、熔断器、token batching；③ <strong>可观测性</strong>——invocation logging 到 CloudWatch/S3、metric filter 提取 token 指标、<strong>anomaly detection 动态基线</strong>（vs 静态阈值）、EMF 自定义指标、Application Insights、X-Ray 注解追踪。加分项：intelligent prompt routing（按复杂度自动选模型省钱）、PerformanceConfigLatency=optimized。</p>
+<p><strong>English Summary</strong>: Tests "making GenAI apps faster, cheaper, steadier." All content reduces to three pairs of opposites: ① <strong>On-Demand vs Provisioned Throughput</strong> (bursty traffic with no fixed cost vs guaranteed capacity for steady high throughput; provisioned throughput only works when you invoke with the returned <strong>model ARN</strong>!); ② <strong>throttle management</strong> — cross-Region inference profiles, exponential backoff with jitter, circuit breakers, token batching; ③ <strong>observability</strong> — invocation logging to CloudWatch/S3, metric filters for token metrics, <strong>anomaly detection with dynamic baselines</strong> (vs static thresholds), EMF custom metrics, Application Insights, X-Ray annotations. Bonus: intelligent prompt routing (auto model selection by complexity), PerformanceConfigLatency=optimized.</p>
+<p><strong>高频考点 / Hot Topics</strong>: provisioned ARN 陷阱、anomaly detection vs 静态阈值、重试三件套（退避+jitter+熔断）、跨区域推理削峰、并行化降延迟（Step Functions Parallel）。</p>
+<h2 id="领域-5测试验证与故障排除11">领域 5：测试、验证与故障排除（11%）</h2>
+<h2 id="domain-5-testing-validation-and-troubleshooting-11">Domain 5: Testing, Validation, and Troubleshooting (11%)</h2>
+<p><strong>中文概要</strong>：考"怎么证明 GenAI 应用足够好、上线后不退化"。核心四件套：① <strong>Bedrock Model Evaluation</strong>——JSONL 数据集放 S3、固定同一 judge 模型（LLM-as-a-judge）保证可比性、数值评分做 CI/CD 质量门禁；② <strong>检索评估 vs 端到端评估</strong>——retrieve-only 看检索、retrieve-and-generate 看全链路；③ <strong>人工兜底</strong>——A2I 按置信度把高风险交互路由给人工；④ <strong>故障排查套路</strong>——超上下文窗口→语义分块+动态检索；输出不一致→prompt 版本化+固定推理参数+量化指标回归测试；跨语言不一致→语义等价多语言测试集+相似度阈值。</p>
+<p><strong>English Summary</strong>: Tests "how to prove a GenAI app is good enough and doesn't regress." Four core pieces: ① <strong>Bedrock Model Evaluation</strong> — JSONL datasets in S3, a single fixed judge model (LLM-as-a-judge) for comparability, numeric scores as CI/CD quality gates; ② <strong>retrieval-only vs end-to-end evaluation</strong> — retrieve-only assesses retrieval, retrieve-and-generate assesses the full pipeline; ③ <strong>human fallback</strong> — A2I routes high-risk interactions to humans by confidence; ④ <strong>troubleshooting patterns</strong> — context-window overflow → semantic chunking + dynamic retrieval; inconsistent outputs → prompt versioning + fixed inference parameters + metric-based regression tests; cross-language inconsistency → semantically equivalent multilingual test sets + similarity thresholds.</p>
+<p><strong>高频考点 / Hot Topics</strong>: judge 模型固定原则、评估作业输入格式（JSONL/S3）、质量门禁接 CI/CD、A2I 混合评估、语义分块治"超长文档截断"。</p>
+<hr />
+<h1 id="第三部分核心知识点详解按重要性排序">第三部分：核心知识点详解（按重要性排序）</h1>
+<h1 id="part-3-core-knowledge-points-ranked-by-importance">Part 3: Core Knowledge Points (Ranked by Importance)</h1>
+<blockquote>
+<p>排序依据：题库出现频率 × 考试权重。Tier 1 = 必考必背；Tier 2 = 高频；Tier 3 = 常见。
+Ranking = frequency in the question bank × exam weight. Tier 1 = must-know; Tier 2 = high-frequency; Tier 3 = common.</p>
+</blockquote>
+<hr />
+<h2 id="tier-1-必考核心-must-master" class="tier tier1">TIER 1 — 必考核心 / Must-Master</h2>
+<hr />
+<h3 id="kp1-amazon-bedrock-knowledge-bases-与-rag-全链路">KP1. Amazon Bedrock Knowledge Bases 与 RAG 全链路 ⭐⭐⭐⭐⭐</h3>
+<h3 id="amazon-bedrock-knowledge-bases-the-rag-pipeline">Amazon Bedrock Knowledge Bases &amp; the RAG Pipeline</h3>
+<p><strong>中文详解</strong>：Knowledge Bases 是 Bedrock 的<strong>全托管 RAG 服务</strong>：自动完成数据摄取（S3）、分块、嵌入生成、向量索引、检索和上下文组装。考试里凡是"最少运维开销/最少开发量 + 需要让模型基于企业数据回答"的场景，答案几乎都是 Knowledge Bases。关键子能力：
+- <strong>检索 API</strong>：<code>Retrieve</code>（只检索，自己拼 prompt）vs <code>RetrieveAndGenerate</code>（检索+生成一站式，原生返回<strong>引用 citations</strong>）vs <code>RetrieveAndGenerateStream</code>（流式版本）。
+- <strong>来源归因 source attribution</strong>：生成结果携带源文档/片段引用——看到"可溯源/引用来源/审计 claims"必选。
+- <strong>Rerank</strong>：Knowledge Bases 内置 reranking 配置（托管 reranker 模型）是"语义相似但上下文不相关→幻觉"的<strong>最少运维</strong>解；单独调 Rerank API 也行但要改代码。
+- <strong>Query decomposition</strong>：把复杂多意图查询拆成子查询——对应"减少语义稀释/提高复杂查询检索精度"。
+- <strong>GraphRAG + Neptune Analytics</strong>：多跳实体关系（投资工具↔板块↔监管）问题，向量搜索做不好，图遍历才行。
+- <strong>元数据过滤 metadata filtering</strong>：检索过宽（过多文档类型/时间跨度）时，用 S3 对象元数据收窄候选集，是"最小架构改动"解。
+- <strong>隔离模式</strong>：强租户/合规隔离（每家酒店/每个部门）→ 每租户一个 Knowledge Base + IAM，优于集中式+查询后过滤。</p>
+<p><strong>English Deep Dive</strong>: Knowledge Bases is Bedrock's <strong>fully managed RAG service</strong>: ingestion (S3), chunking, embedding, vector indexing, retrieval, and context assembly are all managed. Whenever a question says "least operational overhead / least development effort + answer from enterprise data," the answer is almost always Knowledge Bases. Key sub-capabilities: <code>Retrieve</code> (retrieval only) vs <code>RetrieveAndGenerate</code> (one-step with native <strong>citations</strong>) vs <code>RetrieveAndGenerateStream</code>; <strong>source attribution</strong> for auditable claims; <strong>built-in reranking</strong> as the lowest-overhead fix for "semantically similar but contextually irrelevant" retrievals; <strong>query decomposition</strong> for complex multi-intent queries; <strong>GraphRAG + Neptune Analytics</strong> for multi-hop entity relationships; <strong>metadata filtering</strong> as the minimal-change fix for overly broad retrieval; and <strong>per-tenant Knowledge Bases + IAM</strong> for hard isolation.</p>
+<p><strong>应试信号 → 答案 / Exam Signals → Answers</strong>:
+| 题目关键词 Signal | 选这个 Pick |
+|---|---|
+| "least operational overhead" + 企业数据问答 | Bedrock Knowledge Bases |
+| 检索结果"语义相似但上下文无关"、幻觉 | KB 内置 reranking 配置（不要选自建 SageMaker 排序端点） |
+| "链接到源文档 / citations / 可审计 claims" | source attribution / RetrieveAndGenerate |
+| 复杂多意图查询、语义稀释 | query decomposition |
+| 多跳关系（A 影响 B 影响 C）、实体互联 | GraphRAG + Neptune Analytics |
+| 检索范围太宽、要"最小改动" | metadata-aware filtering |
+| 按租户/部门硬隔离数据 | 每租户一个 Knowledge Base + IAM |</p>
+<p><strong>相关题目 / Related Questions</strong>: Q70, Q105(领域1), Q81, Q99, Q104×3, Q107(领域1), Q96, Q98(测试), Q75, Q78</p>
+<p><strong>官方文档 / References</strong>:
+- Knowledge Bases: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html
+- Reranking: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-rerank.html
+- Query decomposition: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-retrieve-decomp.html
+- GraphRAG: https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-graphrag.html
+- Metadata filtering: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-metadata-filtering.html</p>
+<hr />
+<h3 id="kp2-分块策略与嵌入-chunking-strategies-embeddings">KP2. 分块策略与嵌入 / Chunking Strategies &amp; Embeddings ⭐⭐⭐⭐⭐</h3>
+<p><strong>中文详解</strong>：分块是 RAG 质量的第一杠杆，题库反复考四种策略的选择：
+- <strong>固定分块 fixed-size</strong>：简单但会<strong>切断语义</strong>——"法律论证被截断/条文引用断链"的根因，通常是题目里的<strong>错误现状</strong>而非答案。
+- <strong>语义分块 semantic</strong>：按意义边界切分（如 breakpoint percentile 95% + 句缓冲）——治"复杂查询/长文档超上下文窗口被截断"。
+- <strong>分层分块 hierarchical</strong>：父块（如 1000 token）存上下文、子块（如 200 token）做精确匹配、重叠 50 token——治"跨章节引用（方法/结果/讨论）需要父级上下文"。命中子块时带回父块。
+- <strong>上下文分块（按文档结构布局）</strong>：财报"表格数字↔解释文字"关联场景，按章节/表格/段落切。
+- <strong>改分块必须重新生成嵌入</strong>（re-embed），向量与新 chunk 对齐。
+- <strong>嵌入模型</strong>：Titan Embeddings 托管生成向量；文档与查询必须用<strong>同一嵌入模型</strong>保证向量空间一致。</p>
+<p><strong>English Deep Dive</strong>: Chunking is the #1 lever of RAG quality. <strong>Fixed-size</strong> chunking severs semantics (usually the <em>problem</em> in the question, not the answer). <strong>Semantic</strong> chunking splits on meaning boundaries (breakpoint percentile ~95% + sentence buffer) — the fix for context-window truncation on long docs. <strong>Hierarchical</strong> chunking pairs small child chunks (~200 tokens, precise matching) with parent chunks (~1000 tokens, context), ~50-token overlap — the fix for cross-section references (methods/results/discussion) needing parent context. <strong>Layout-aware chunking</strong> preserves table↔narrative associations in financial reports. Re-chunking requires <strong>re-embedding</strong>. Documents and queries must use the <strong>same embedding model</strong>.</p>
+<p><strong>应试信号 → 答案 / Exam Signals → Answers</strong>:
+| 题目关键词 Signal | 选这个 Pick |
+|---|---|
+| 固定分块切断论证/引用 | 改语义分块 + 重新生成嵌入 |
+| 跨章节（方法/结果/讨论）引用不相关 | hierarchical chunking（父1000/子200/重叠50） |
+| 50–200页文档超上下文窗口、输出截断 | 语义分块 + RetrieveAndGenerate 动态检索 |
+| 表格数字与解释文字要保关联 | 按文档结构布局的上下文分块 |
+| 提高向量维度能解决检索质量？ | ❌ 干扰项——只增成本延迟 |</p>
+<p><strong>相关题目 / Related Questions</strong>: Q82(领域1), Q83, Q77, Q64, Q101(测试)</p>
+<p><strong>官方文档 / References</strong>: https://docs.aws.amazon.com/bedrock/latest/userguide/kb-chunking.html</p>
+<hr />
+<h3 id="kp3-bedrock-guardrails-六大能力">KP3. Bedrock Guardrails 六大能力 ⭐⭐⭐⭐⭐</h3>
+<h3 id="the-six-guardrails-capabilities">The Six Guardrails Capabilities</h3>
+<p><strong>中文详解</strong>：Guardrails 在推理路径<strong>内联</strong>生效（低延迟、可满足 200ms 要求），同时作用于<strong>输入和输出</strong>。六大能力及分工（考试就是考分工）：
+1. <strong>内容过滤 content filters</strong>：hate/sexual/violence/insults/misconduct/prompt attack，强度 low/medium/high。面向客户金融场景推荐 <strong>medium</strong>（high 误报泛滥）；防提示注入用 <strong>high</strong>。
+2. <strong>Denied topics 拒绝话题</strong>：整类阻断领域话题（投资建议、个股推荐、保证收益）——配<strong>定义 + 示例短语</strong>提高准确率。
+3. <strong>敏感信息过滤 sensitive info (PII)</strong>：三种动作——<strong>block</strong>（拦截，用于输入端最强防护）、<strong>mask</strong>（打码脱敏，用于输出端；开发测试期用 mask 便于验证规则）、<strong>detect</strong>（只标记不阻断——"只通知不阻断"场景）。输入输出可配不同动作。
+4. <strong>自定义词过滤 word filters</strong>：屏蔽<strong>竞争对手名称</strong>等具体词表——content filter 干不了这个（经典陷阱）。
+5. <strong>Contextual grounding 上下文接地</strong>：防幻觉，验证输出是否基于给定文档；<strong>高阈值</strong>强制有据可依。
+6. <strong>Guardrail profile</strong>：跨区域一致部署同一护栏配置（无配置漂移）；但注意 <strong>guardrail 是 Region 级资源</strong>——数据驻留场景须每个 Region 部署本地副本，cross-Region guardrail 违反驻留。</p>
+<p>集中治理套路：CloudFormation/StackSets 把 guardrail 部署到所有账户 + <strong>SCP 强制调用必须带 guardrail ID</strong>（SCP 可校验请求参数，权限边界不行）。</p>
+<p><strong>English Deep Dive</strong>: Guardrails execute <strong>inline</strong> on the inference path (low latency), applying to <strong>both input and output</strong>. The six capabilities and their division of labor: ① <strong>content filters</strong> (hate/sexual/violence/insults/misconduct/prompt attack at low/medium/high — medium for customer-facing finance; high against prompt injection); ② <strong>denied topics</strong> for blocking whole topic classes (investment advice) with definitions + sample phrases; ③ <strong>sensitive info filters</strong> with three actions — <strong>block</strong> (input-side max protection), <strong>mask</strong> (output-side redaction; use mask in dev to validate rules), <strong>detect</strong> (flag only, for "notify without blocking"); ④ <strong>custom word filters</strong> for competitor names (content filters can't do this — classic trap); ⑤ <strong>contextual grounding</strong> against hallucination (high threshold = evidence-based only); ⑥ <strong>guardrail profiles</strong> for consistent multi-Region application — but guardrails are Regional resources, so data-residency scenarios need a local copy per Region. Centralized governance: deploy via CloudFormation StackSets + SCPs enforcing guardrail IDs on invocations.</p>
+<p><strong>应试信号 → 答案 / Exam Signals → Answers</strong>:
+| 题目关键词 Signal | 选这个 Pick |
+|---|---|
+| 禁止谈论某话题（投资建议） | denied topics + 定义 + 示例短语 |
+| 屏蔽竞争对手名字 | 自定义词过滤（不是 content filter！） |
+| PII 不进模型 / 响应脱敏 | 敏感信息过滤：输入 block / 输出 mask |
+| "只通知不阻断"（霸凌语言） | insults 过滤器 + 动作 = detect |
+| 防幻觉/输出须有据可依 | contextual grounding + 高阈值 |
+| 防提示注入 + 跨区域一致 + 审计 | 内容过滤 high + guardrail profile + CloudWatch Logs |
+| 最小化误报 | medium 灵敏度、单一精细调优 guardrail（不要分层多个） |
+| 测试期验证 PII 规则、生产最强防护 | 测试 mask → 生产 block，每 Region 各部署一份 |</p>
+<p><strong>相关题目 / Related Questions</strong>: Q107(AI安全)×2, Q102(AI安全)×2, Q72, Q93(AI安全), Q94(AI安全), Q100(UGC), Q101(注入), Q87(医疗), Q79, Q98×2</p>
+<p><strong>官方文档 / References</strong>:
+- Guardrails: https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html
+- Sensitive info filters: https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-sensitive-info.html
+- Contextual grounding: https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-contextual-grounding.html</p>
+<hr />
+<h3 id="kp4-bedrock-推理-api-与流式体系">KP4. Bedrock 推理 API 与流式体系 ⭐⭐⭐⭐⭐</h3>
+<h3 id="bedrock-inference-apis-streaming">Bedrock Inference APIs &amp; Streaming</h3>
+<p><strong>中文详解</strong>：API 选型是领域 2 的送分题，对照表背下来：
+- <strong>InvokeModel</strong>：一次性返回完整响应——非交互、后台任务。
+- <strong>InvokeModelWithResponseStream</strong>：token 级流式输出——"实时/逐字符展示/降低感知延迟/响应 15–45 秒"必选。
+- <strong>Converse / ConverseStream</strong>：<strong>多轮对话</strong>统一接口，跨模型（Claude/Titan/Llama…）消息格式一致；上下文通过请求里的 <strong>messages 数组</strong>显式传递，无需外部状态存储；跨 Lambda(Python)/EKS(JS) 等多环境用同一接口 + IAM 角色认证。
+- <strong>配套流式前端</strong>：API Gateway <strong>WebSocket API</strong>（服务端主动推送、双向、高并发长连接）＞ HTTP 轮询；<strong>Lambda response streaming</strong>（一产生就返回客户端）；<strong>Transcribe streaming + partial results</strong>（说话人没说完就出片段，亚秒级语音链路的关键）。
+- 典型实时链路：Transcribe streaming(partial) → Bedrock InvokeModelWithResponseStream → API Gateway WebSocket 推送。
+- <strong>禁止</strong>：前端直连 Bedrock 持 IAM 凭证（安全违规）。</p>
+<p><strong>English Deep Dive</strong>: API selection is free points in Domain 2: <strong>InvokeModel</strong> (one-shot, background jobs); <strong>InvokeModelWithResponseStream</strong> (token-level streaming — pick for "real-time / character-by-character / perceived latency"); <strong>Converse/ConverseStream</strong> (unified <strong>multi-turn</strong> interface across models; context passed explicitly via the <strong>messages array</strong>, no external state store; works identically across Lambda/EKS with IAM roles). Streaming front-ends: API Gateway <strong>WebSocket API</strong> (server push, bidirectional, high-concurrency long connections) beats polling; <strong>Lambda response streaming</strong>; <strong>Transcribe streaming with partial results</strong> (fragments before the speaker finishes — the key to sub-second voice pipelines). Canonical real-time chain: Transcribe streaming(partial) → InvokeModelWithResponseStream → WebSocket push. Never let browsers call Bedrock directly with IAM credentials.</p>
+<p><strong>应试信号 → 答案 / Exam Signals → Answers</strong>:
+| 题目关键词 Signal | 选这个 Pick |
+|---|---|
+| 逐字符实时展示、数千并发、响应 15–45s | WebSocket API + Lambda + InvokeModelWithResponseStream |
+| 语音助手端到端 &lt;1 秒、边说边转写 | Transcribe streaming partial results + 流式推理 + WebSocket |
+| 多轮对话、跨语言/跨计算环境统一 | Converse API + messages 数组 + IAM 角色 |
+| 双向流式通信、托管 | API Gateway WebSocket（不要选轮询/ECS 自建 socket） |</p>
+<p><strong>相关题目 / Related Questions</strong>: Q94(实施), Q92, Q98(实施), Q101(实施), Q85(流式API设计), Q68(测试)</p>
+<p><strong>官方文档 / References</strong>:
+- Converse API: https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html
+- Streaming: https://docs.aws.amazon.com/bedrock/latest/userguide/inference-invoke.html</p>
+<hr />
+<h3 id="kp5-cross-region-inference-与数据驻留">KP5. Cross-Region Inference 与数据驻留 ⭐⭐⭐⭐⭐</h3>
+<h3 id="cross-region-inference-profiles-data-residency">Cross-Region Inference Profiles &amp; Data Residency</h3>
+<p><strong>中文详解</strong>：这是题库中重复出现 4+ 次的超级考点。规则：
+- <strong>Cross-Region inference (CRI) profile</strong>：调用时 modelId 用 <strong>inference profile ID</strong>（带地理代码，如 <code>eu.amazon.nova-pro-v1:0</code>），Bedrock 自动在<strong>该地理范围内</strong>的多 Region 间路由/削峰/故障转移——免自建 failover、免预留容量、按需计费无固定成本。
+- <strong>数据驻留</strong>：选<strong>地理范围限定</strong>的 profile（EU 范围 profile 只路由到欧洲 Region）——"欧洲数据不出欧洲"的合规解。
+- <strong>SCP 治理</strong>：SCP 优先于 IAM（AdministratorAccess 也过不了 SCP 显式拒绝）；SCP 必须<strong>显式放行 inference profile</strong>；扩展 SCP 允许 <code>eu-*</code> profile = 精确治理 + 驻留兼得。
+- <strong>私有访问</strong>：Bedrock <strong>interface VPC endpoint (PrivateLink)</strong> 保证流量不出 AWS 私网；NAT 网关/公网端点一律违规。
+- 反模式：自建 Lambda/EC2 路由层、把重试选区逻辑写进应用（有误配跨境风险）、改去 SageMaker 托管。</p>
+<p><strong>English Deep Dive</strong>: A super-topic appearing 4+ times in the bank. Rules: a <strong>CRI profile</strong> (geography-coded ID, e.g. <code>eu.amazon.nova-pro-v1:0</code>) lets Bedrock automatically route/throttle-shift/fail over across Regions <strong>within that geography</strong> — no self-built failover, on-demand pricing with no fixed cost. <strong>Data residency</strong>: pick a geo-scoped profile (EU profile routes only to EU Regions). <strong>SCP governance</strong>: SCPs override IAM (even AdministratorAccess can't pass an explicit SCP deny); SCPs must explicitly allow the inference profile; allowing <code>eu-*</code> profiles = precise governance + residency. <strong>Private access</strong>: Bedrock interface VPC endpoints (PrivateLink); NAT gateways/public endpoints always violate. Anti-patterns: self-built Lambda/EC2 routing layers, app-level retry/region-selection logic, moving to SageMaker hosting.</p>
+<p><strong>应试信号 → 答案 / Exam Signals → Answers</strong>:
+| 题目关键词 Signal | 选这个 Pick |
+|---|---|
+| 峰值限流 + 数据驻留 + 运维最简 | geo-scoped cross-Region inference profile + 分区 API Gateway |
+| SCP 拒绝 CRI 调用（资源落在他区） | 扩展 SCP 放行 <code>eu.amazon.*</code> / <code>eu-*</code> inference profile |
+| 请求走私有网络 + 留在指定区域 | CRI profile + Bedrock VPC endpoint |
+| 全球时区晚高峰限流、低谷无固定成本 | CRI 分散流量（on-demand），不要 provisioned throughput |</p>
+<p><strong>相关题目 / Related Questions</strong>: Q106(AI安全), Q90(AI安全), Q105(运营)×2, Q104(运营), Q102(领域1), Q103(运营)</p>
+<p><strong>官方文档 / References</strong>: https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html</p>
+<hr />
+<h3 id="kp6-provisioned-throughput-vs-on-demand">KP6. Provisioned Throughput vs On-Demand ⭐⭐⭐⭐</h3>
+<h3 id="provisioned-throughput-vs-on-demand">Provisioned Throughput vs On-Demand</h3>
+<p><strong>中文详解</strong>：
+- <strong>Provisioned Throughput (PT)</strong>：购买 Model Units 预留容量——关键词"稳定高吞吐/批处理/延迟一致/消除限流与冷启动"。<strong>有固定小时费</strong>，低谷也计费。
+- <strong>On-Demand</strong>：按量付费、无固定成本——关键词"流量波动/时区高峰/低谷无固定费用"。
+- ⚠️ <strong>经典陷阱（考了 2 次）</strong>：买了 PT 但代码用基础 modelId（如 <code>anthropic.claude-v2</code>）调用 → 流量走 on-demand 池 → "预置容量闲置 + 按需被限流"。<strong>解法：把 modelId 换成 CreateProvisionedModelThroughput 返回的预置模型 ARN</strong>。
+- 加 MU 不解决路由错误；退避重试只是止痛。</p>
+<p><strong>English Deep Dive</strong>: <strong>PT</strong> reserves Model Units for guaranteed capacity — signals: "steady high throughput / consistent latency / eliminate throttling &amp; cold starts"; it bills hourly even when idle. <strong>On-Demand</strong> has no fixed cost — signals: "bursty traffic / no fixed cost in troughs." ⚠️ <strong>Classic trap (asked twice)</strong>: bought PT but invoking with the base modelId → traffic goes to the on-demand pool → "provisioned capacity idle + on-demand throttled." <strong>Fix: set modelId to the provisioned model ARN</strong> returned by CreateProvisionedModelThroughput. Adding MUs doesn't fix routing; retries only mask symptoms.</p>
+<p><strong>相关题目 / Related Questions</strong>: Q106(运营)×2, Q91, Q102(AI安全), Q76, Q93(实施), Q104(运营-全球学生)</p>
+<p><strong>官方文档 / References</strong>: https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html</p>
+<hr />
+<h2 id="tier-2-高频考点-high-frequency" class="tier tier2">TIER 2 — 高频考点 / High-Frequency</h2>
+<hr />
+<h3 id="kp7-多智能体架构supervisor-collaboratoragentcoremcp">KP7. 多智能体架构：Supervisor + Collaborator、AgentCore、MCP ⭐⭐⭐⭐</h3>
+<h3 id="multi-agent-architectures">Multi-Agent Architectures</h3>
+<p><strong>中文详解</strong>：
+- <strong>Supervisor + Collaborator 模式</strong>（考 3 次）：一个 supervisor agent 做意图分类与路由，多个 collaborator agent 各管一个领域（临床/保险/预约/理赔），各自挂<strong>独立 Knowledge Base + IAM 隔离</strong>。新功能 = 新 collaborator + 新 KB，无需重构。
+- <strong>Bedrock AgentCore</strong>：托管 agent 记忆、会话感知推理、身份与事件处理——"跨交互记忆 + 会话状态 + 同步/事件双模式 + 最具扩展性"的答案。
+- <strong>MCP server</strong>：远程 MCP 用 <strong>Streamable HTTP 传输</strong>（STDIO 只适合本地进程）；Lambda 托管 + API Gateway 代理 + <strong>Cognito OAuth 2.1</strong> 做用户级授权（只授权 agent ≠ 用户授权）。
+- <strong>Agents tracing</strong>：端到端推理步骤 + 工具调用轨迹——"透明/展示推理过程/审计"场景。</p>
+<p><strong>English Deep Dive</strong>: <strong>Supervisor + Collaborator</strong> (asked 3×): one supervisor classifies intent and routes to domain collaborator agents, each with its own <strong>isolated Knowledge Base + IAM</strong>. New capability = new collaborator + KB. <strong>Bedrock AgentCore</strong> manages agent memory, session-aware reasoning, identity, and event handling. <strong>MCP servers</strong>: remote MCP uses <strong>Streamable HTTP</strong> (STDIO is local-only); host on Lambda + API Gateway with <strong>Cognito OAuth 2.1</strong> for user-level authorization. <strong>Agents tracing</strong> exposes reasoning steps and tool calls for transparency/audit.</p>
+<p><strong>应试信号 → 答案</strong>: 多部门助手+数据隔离+易扩展 → supervisor/collaborator + 每部门 KB；agent 记忆与会话 → AgentCore；MCP 远程授权 → Streamable HTTP + OAuth 2.1。</p>
+<p><strong>相关题目</strong>: Q75, Q105(实施-医疗), Q85(实施-记忆), Q98(MCP), Q73
+<strong>参考</strong>: https://docs.aws.amazon.com/bedrock/latest/userguide/agents-multi-agent-collaboration.html</p>
+<hr />
+<h3 id="kp8-aws-appconfig动态配置与-feature-flags">KP8. AWS AppConfig：动态配置与 Feature Flags ⭐⭐⭐⭐</h3>
+<p><strong>中文详解</strong>：AppConfig 是"<strong>不改代码/不重部署就改行为</strong>"的御用答案（考 4 次）：动态配置、JSON schema 校验、feature flags（A/B 测试/渐进发布）、分阶段 rollout、自动回滚、<strong>AppConfig Agent</strong>（Lambda 扩展层，本地缓存低延迟读配置）。场景：多 FM 动态路由规则（按用户层级/监管区/成本）、按客户等级切模型、prompt 模板版本门控。干扰项：Parameter Store（无 rollout/校验/回滚）、环境变量（需重启、无校验）、DynamoDB/ElastiCache（要自建 flag 与轮询）。</p>
+<p><strong>English Deep Dive</strong>: AppConfig is the canonical answer for "change behavior without redeploying" (asked 4×): dynamic config, JSON schema validation, feature flags (A/B, progressive rollouts), staged deployment, automatic rollback, and the <strong>AppConfig Agent</strong> Lambda extension (local caching). Scenarios: dynamic multi-FM routing rules, per-tier model switching, prompt-template version gating. Distractors: Parameter Store (no rollout/validation/rollback), env vars (require restart), DynamoDB/ElastiCache (DIY flags).</p>
+<p><strong>相关题目</strong>: Q74, Q106(实施), Q72(运营), Q104(实施), Q90(实施)
+<strong>参考</strong>: https://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html</p>
+<hr />
+<h3 id="kp9-可观测性cloudwatch-全家桶-x-ray-cloudtrail">KP9. 可观测性：CloudWatch 全家桶 + X-Ray + CloudTrail ⭐⭐⭐⭐</h3>
+<h3 id="observability-cloudwatch-x-ray-cloudtrail">Observability: CloudWatch, X-Ray, CloudTrail</h3>
+<p><strong>中文详解</strong>（考 6+ 次，模式极固定）：
+- <strong>Model invocation logging</strong>：Bedrock 原生把调用日志（含 token 计数、prompt/response）投递到 <strong>CloudWatch Logs 或 S3</strong>——一切监控的数据源。
+- <strong>Metric filters</strong>：从日志提取按工具/模型维度的结构化指标，免自建管道。
+- <strong>Anomaly detection 异常检测</strong>：自动建动态基线——"阈值随流量自动调整/对比基线检测退化"必选；<strong>静态阈值 = 干扰项</strong>。
+- <strong>EMF (embedded metric format)</strong> 自定义指标 + 维度（请求类型/用户分群）：细粒度 GenAI 信号（推荐质量/token/延迟）。
+- <strong>Application Insights</strong>：EC2 应用自动观测 + 指标日志关联根因。
+- <strong>X-Ray</strong>：跨服务分布式追踪定位延迟来源；<strong>注解 annotations</strong> 标模型特征（model ID、推理参数、Region）做关联分析。CloudTrail 是审计不是追踪！
+- <strong>CloudTrail / CloudTrail Lake</strong>：API 级审计（谁、何时、调了什么）；Lake 提供长期可查询集中审计。审计双层 = CloudTrail（API）+ invocation logging（prompt/response 明细）。
+- <strong>Managed Grafana zero-ETL</strong>：多角色自定义仪表盘的最少运维方案。</p>
+<p><strong>English Deep Dive</strong> (asked 6+ times, formulaic): <strong>Invocation logging</strong> streams call logs (tokens, prompts/responses) to CloudWatch Logs or S3 — the data source for everything. <strong>Metric filters</strong> extract per-tool metrics without pipelines. <strong>Anomaly detection</strong> builds dynamic baselines — always pick it for "thresholds that auto-adjust / detect degradation vs baseline"; static thresholds are distractors. <strong>EMF</strong> custom metrics with dimensions slice GenAI signals. <strong>Application Insights</strong> auto-monitors EC2 apps and correlates root causes. <strong>X-Ray</strong> traces cross-service latency; <strong>annotations</strong> tag model characteristics. CloudTrail is audit, not tracing! Two-layer audit = CloudTrail (API) + invocation logging (content). <strong>Managed Grafana zero-ETL</strong> for multi-role dashboards.</p>
+<p><strong>相关题目</strong>: Q48, Q100(运营-token), Q104(运营)×2, Q88, Q103(运营), Q80(AI安全), Q105(运营-仪表盘)
+<strong>参考</strong>: https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html ｜ https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Anomaly_Detection.html</p>
+<hr />
+<h3 id="kp10-step-functions-编排模式">KP10. Step Functions 编排模式 ⭐⭐⭐⭐</h3>
+<h3 id="step-functions-orchestration-patterns">Step Functions Orchestration Patterns</h3>
+<p><strong>中文详解</strong>：
+- <strong>Standard vs Express</strong>：长运行、有状态、可审计（训练流程、人工审批）→ <strong>Standard</strong>；短平快高并发 → Express。
+- <strong>Parallel / Map state</strong>：相互独立的多次 FM 调用<strong>并行化</strong>——"45 秒串行压到 10 秒"的唯一正解；短期密钥并行刷新用 Map。
+- <strong>waitForTaskToken（回调等待）</strong>：<strong>human-in-the-loop 标准做法</strong>——人工审批暂停工作流，SendTaskSuccess 继续，状态转移全程可审计；也用于"等待用户澄清输入"。
+- <strong>256KB 状态配额</strong>：中间推理输出超限 → <strong>大对象存 S3，状态间用 ResultPath/ResultSelector 只传引用（URI/key）</strong>。
+- 经典事件驱动 MLOps：S3 上传事件 → Lambda → Step Functions → SageMaker Pipelines 重训练重部署。</p>
+<p><strong>English Deep Dive</strong>: <strong>Standard</strong> for long-running, auditable, stateful flows (training, human approval); Express for short high-rate ones. <strong>Parallel/Map</strong> states parallelize independent FM calls — the only way to cut 45s serial to 10s. <strong>waitForTaskToken</strong> is the standard human-in-the-loop pattern (pause for approval, resume via SendTaskSuccess, fully auditable). <strong>256KB state quota</strong>: store large intermediate outputs in S3 and pass only references via ResultPath/ResultSelector. Classic event-driven MLOps: S3 event → Lambda → Step Functions → SageMaker Pipelines.</p>
+<p><strong>相关题目</strong>: Q101(运营-并行), Q98(审批), Q61, Q102(实施-MLOps), Q85(会话), Q95(实施-混合路由), Q100(UGC 编排)
+<strong>参考</strong>: https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html</p>
+<hr />
+<h3 id="kp11-向量数据库选型">KP11. 向量数据库选型 ⭐⭐⭐⭐</h3>
+<h3 id="vector-store-selection">Vector Store Selection</h3>
+<p><strong>中文详解</strong>（对照表直接背）：
+| 场景 Scenario | 选型 Pick |
+|---|---|
+| 托管 RAG、最少开发量 | <strong>Knowledge Bases</strong>（帮你选底层向量库） |
+| 大规模向量 + 元数据过滤 + 混合搜索、免集群管理 | <strong>OpenSearch Serverless</strong> |
+| &lt;100 万向量、向量+元数据同库、自动扩缩 | <strong>Aurora PostgreSQL Serverless + pgvector</strong> |
+| 小型专有数据集、极致召回精度、微秒延迟 | <strong>MemoryDB + HNSW 索引</strong>（小数据集 AWS 推荐 HNSW；Flat 暴力开销大） |
+| 多跳实体关系 GraphRAG | <strong>Neptune Analytics</strong> |
+| 高吞吐语义搜索（非 RAG 抽象层） | OpenSearch Service + k-NN |
+- <strong>混合搜索 hybrid search</strong>（向量 + BM25 关键词）：治"漏精确术语/缩写/法条引用"——OpenSearch 原生支持，同索引融合排序，常配合 reranker。</p>
+<p><strong>English Deep Dive</strong>: Managed RAG → <strong>Knowledge Bases</strong>; large-scale vectors + metadata filters + hybrid search, no cluster management → <strong>OpenSearch Serverless</strong>; &lt;1M vectors co-located with metadata, auto-scaling → <strong>Aurora Serverless + pgvector</strong>; small proprietary datasets needing max recall at microsecond latency → <strong>MemoryDB + HNSW</strong> (AWS-recommended for small datasets; Flat is brute-force); multi-hop GraphRAG → <strong>Neptune Analytics</strong>; high-throughput semantic search → OpenSearch k-NN. <strong>Hybrid search</strong> (vector + BM25) fixes missed exact terms/acronyms/citations — natively supported in OpenSearch, often paired with a reranker.</p>
+<p><strong>相关题目</strong>: Q63, Q59, Q68(领域1), Q107(领域1), Q89(法律), Q90(GraphRAG), Q78(餐厅), Q81
+<strong>参考</strong>: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/knn.html</p>
+<hr />
+<h3 id="kp12-模型评估与质量门禁">KP12. 模型评估与质量门禁 ⭐⭐⭐⭐</h3>
+<h3 id="model-evaluation-quality-gates">Model Evaluation &amp; Quality Gates</h3>
+<p><strong>中文详解</strong>：
+- <strong>Bedrock Model Evaluation 作业</strong>：输入 = <strong>JSONL 数据集放 S3</strong>，输出到另一 S3 位置；<strong>judge 模型固定不变</strong>（LLM-as-a-judge，如 Claude Sonnet）评所有候选 FM（candidates 是 generator 不是 evaluator！），保证 apples-to-apples；数值评分（1–5）支持自动化阈值门禁。
+- <strong>retrieve-only vs retrieve-and-generate</strong>：前者只评检索；横向比较 chunking 策略对<strong>生成质量</strong>的影响必须用后者 + 同一评估数据集并列多策略。
+- <strong>CI/CD 质量门禁</strong>：评估指标阈值不达标就阻断部署（CodePipeline 触发评估）；多语言一致性用<strong>语义等价测试集 + 相似度阈值</strong>。
+- <strong>A2I (Augmented AI)</strong>：按置信度/规则把高风险交互路由人工——"自动评估规模化 + 定向人工复审"组合拳；也是 Textract 低置信抽取转人工的服务。
+- prompt 版本历史 + 量化指标 + 自动化回归测试 = 诊断输出不一致三件套。</p>
+<p><strong>English Deep Dive</strong>: <strong>Evaluation jobs</strong>: JSONL datasets in S3, results to S3; keep the <strong>judge model fixed</strong> (LLM-as-a-judge) across all candidate FMs (candidates are generators, not evaluators!) for apples-to-apples; numeric scores enable automated gates. <strong>retrieve-only</strong> assesses retrieval; comparing chunking strategies' effect on generation requires <strong>retrieve-and-generate</strong> with strategies side-by-side in one dataset. <strong>CI/CD quality gates</strong> block deploys below thresholds; cross-language consistency needs <strong>semantically equivalent multilingual test sets + similarity thresholds</strong>. <strong>A2I</strong> routes high-risk items to humans by confidence — the "automated at scale + targeted human review" combo; also the human-review service for low-confidence Textract extractions. Prompt version history + quantitative metrics + automated regression tests = the inconsistency-diagnosis trio.</p>
+<p><strong>相关题目</strong>: Q53, Q39, Q105(测试)×2, Q90(测试), Q95(测试), Q99(测试-电商), Q101(测试)×2, Q84(测试)
+<strong>参考</strong>: https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html</p>
+<hr />
+<h3 id="kp13-安全治理iam-scp-私有访问-数据湖授权">KP13. 安全治理：IAM / SCP / 私有访问 / 数据湖授权 ⭐⭐⭐⭐</h3>
+<h3 id="security-governance-iam-scps-private-access-lake-formation">Security Governance: IAM, SCPs, Private Access, Lake Formation</h3>
+<p><strong>中文详解</strong>：
+- <strong>IAM ABAC</strong>（按属性/部门标签授权）：大规模控制 FM 访问模式。
+- <strong>IAM 条件键</strong>：强制 <code>GuardrailIdentifier</code> / <code>ModelId</code> ——"只能用获批模型和护栏"。
+- <strong>SCP</strong>：Organizations 最强边界，优先于一切 IAM 授权；可校验请求参数（权限边界不行）。
+- <strong>VPC endpoint (PrivateLink)</strong>：私有调 Bedrock 唯一正解；IAM 条件键 <code>aws:sourceVpce</code> 锁定批准端点。
+- <strong>Lake Formation + LF-Tags</strong>：数据湖<strong>列级</strong>、跨账号授权的唯一解（S3 bucket policy/IAM 做不到列级）；FM 只访问脱敏列子集。
+- <strong>Macie</strong>：静态数据 PII/敏感数据自动发现分类（不是实时过滤！）。
+- <strong>Glue Data Catalog</strong>：数据源注册 + 元数据 + <strong>血缘追踪</strong>——"端到端可追溯/归因"答案。
+- <strong>联合认证</strong>：Entra ID ↔ IAM 用 <strong>SAML 联合</strong>；按部门建 IAM 角色限定 ModelId。
+- <strong>S3 审计体系</strong>：对象元数据 + 标签 + server access logging + Object Lock（不可篡改留存）。</p>
+<p><strong>English Deep Dive</strong>: <strong>IAM ABAC</strong> for attribute/department-based FM access at scale; <strong>IAM condition keys</strong> to enforce <code>GuardrailIdentifier</code>/<code>ModelId</code> ("approved models and guardrails only"); <strong>SCPs</strong> as the strongest boundary, evaluated before IAM, capable of validating request parameters (permission boundaries can't); <strong>VPC endpoints (PrivateLink)</strong> as the only correct private-access answer, lockable via <code>aws:sourceVpce</code>; <strong>Lake Formation LF-Tags</strong> as the only column-level, cross-account data-lake authorization (bucket policies can't do columns); <strong>Macie</strong> for at-rest sensitive-data discovery (not real-time filtering!); <strong>Glue Data Catalog</strong> for source registration + lineage; <strong>SAML federation</strong> for Entra ID↔IAM; S3 object metadata + tags + access logging + Object Lock for tamper-proof audit.</p>
+<p><strong>相关题目</strong>: Q80(AI安全), Q93(AI安全), Q90(AI安全-SCP), Q100(Entra), Q86×2, Q78(实施-私有), Q95(三洲驻留), Q107(血缘), Q68(AI安全-IaC)
+<strong>参考</strong>: https://docs.aws.amazon.com/bedrock/latest/userguide/security.html ｜ https://docs.aws.amazon.com/lake-formation/latest/dg/what-is-lake-formation.html</p>
+<hr />
+<h2 id="tier-3-常见考点-common-topics" class="tier tier3">TIER 3 — 常见考点 / Common Topics</h2>
+<hr />
+<h3 id="kp14-数据预处理与专用-ai-服务分工">KP14. 数据预处理与专用 AI 服务分工 ⭐⭐⭐</h3>
+<h3 id="data-preprocessing-purpose-built-ai-services">Data Preprocessing &amp; Purpose-Built AI Services</h3>
+<p><strong>中文详解</strong>（服务分工表，选错服务是主要陷阱）：
+| 任务 Task | 服务 Service |
+|---|---|
+| 大规模数据准备/编目/质量校验 | <strong>Glue</strong>（crawler 推断 schema 入 Data Catalog、ETL 自定义分块、Data Quality 内置规则+指标） |
+| 文本 PII 检测与脱敏 | <strong>Comprehend</strong>（还有 toxicity detection、prompt safety classification） |
+| 扫描件/表单结构化抽取 + 置信度 | <strong>Textract</strong>（低置信 → A2I 人工） |
+| 语音转文字 | <strong>Transcribe</strong>（streaming + partial results 实时；batch 非实时） |
+| 图像/视频内容审核 | <strong>Rekognition</strong>（image moderation） |
+| 大规模多模态文档处理编排 | <strong>Bedrock Data Automation (BDA)</strong> |
+| 静态数据敏感发现 | <strong>Macie</strong> |
+- 注意：并行执行多个 Comprehend 检测避免串行延迟；PII 必须 <strong>redaction</strong> 不能仅 detection。</p>
+<p><strong>English Deep Dive</strong>: Glue for large-scale prep/catalog/quality (crawlers → Data Catalog, ETL chunking, Data Quality rules); Comprehend for PII detection/redaction + toxicity + prompt-safety classification; Textract for structured extraction from scans (low confidence → A2I); Transcribe for speech (streaming+partial for real-time); Rekognition for image/video moderation; <strong>Bedrock Data Automation</strong> for multimodal processing at scale; Macie for at-rest discovery. Run Comprehend checks <strong>in parallel</strong> to avoid serial latency; PII needs <strong>redaction</strong>, not just detection.</p>
+<p><strong>相关题目</strong>: Q95(Glue), Q55, Q79(BDA), Q87(贷款), Q87(Comprehend 分层), Q100(UGC), Q99(野生动物)
+<strong>参考</strong>: https://docs.aws.amazon.com/comprehend/latest/dg/what-is.html</p>
+<hr />
+<h3 id="kp15-韧性设计重试熔断金丝雀">KP15. 韧性设计：重试、熔断、金丝雀 ⭐⭐⭐</h3>
+<h3 id="resilience-retries-circuit-breakers-canary-releases">Resilience: Retries, Circuit Breakers, Canary Releases</h3>
+<p><strong>中文详解</strong>：
+- <strong>重试三件套</strong>：指数退避 + <strong>jitter</strong>（打散重试防同步风暴）+ <strong>熔断器</strong>（错误率超阈值暂停重试，防压垮服务/级联故障）。固定延迟固定次数 = 干扰项。
+- <strong>流式恢复</strong>：缓冲已收 chunk，从断点续传，不整流重启。
+- <strong>金丝雀发布</strong>：EventBridge 触发 → Step Functions 分阶段切流（stage/wait/条件分支）→ Lambda 查 CloudWatch 指标 → 健康增量、恶化<strong>自动回滚</strong>，零人工。
+- <strong>IaC 治理</strong>：CloudFormation 模板 + 集中版本仓库 + <strong>CloudFormation Guard 在 CI/CD 预部署阶段</strong>强制合规（部署后才检查 = 干扰项）。</p>
+<p><strong>English Deep Dive</strong>: Retry trio: exponential backoff + <strong>jitter</strong> + <strong>circuit breaker</strong> (pause retries above an error threshold — prevents cascading failure). Fixed-delay retries are distractors. <strong>Streaming recovery</strong>: buffer received chunks, resume from last position. <strong>Canary releases</strong>: EventBridge → Step Functions staged traffic shifting → Lambda checks CloudWatch metrics → increment if healthy, <strong>auto-rollback</strong> if not, zero human touch. <strong>IaC governance</strong>: CloudFormation + central repo + <strong>CloudFormation Guard in the CI/CD pre-deploy phase</strong> (post-deploy checks are distractors).</p>
+<p><strong>相关题目</strong>: Q84(运营), Q103(运营), Q106(运营-金丝雀), Q68(AI安全-Guard)
+<strong>参考</strong>: https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html</p>
+<hr />
+<h3 id="kp16-bedrock-flows-与-prompt-management">KP16. Bedrock Flows 与 Prompt Management ⭐⭐⭐</h3>
+<h3 id="bedrock-flows-prompt-management">Bedrock Flows &amp; Prompt Management</h3>
+<p><strong>中文详解</strong>：
+- <strong>Prompt Management</strong>：prompt <strong>版本化 + 审批工作流 + 变量参数化</strong>（必填输入定义为变量、指定输出格式）——"数百模板跨团队治理/版本控制+通知审批+审计"的答案；配合 IAM 控审批权限 + CloudTrail 审计。也用于保证同输入同 prompt 版本 → 输出一致性。
+- <strong>Bedrock Flows</strong>：可视化托管编排多步 GenAI 工作流（S3 action 节点取/存数据、expression 节点确定性解析、prompt/agent 节点挂 guardrail）——比 agent+Lambda 免胶水代码。flow 的 prompt 节点可直接挂 Prompt Management 模板和 guardrail。
+- <strong>Intelligent prompt routing</strong>：按 prompt 复杂度自动路由到大小模型——"70% 简单问题省钱 + 30% 复杂问题保质量、最少实现工作量"的原生解。</p>
+<p><strong>English Deep Dive</strong>: <strong>Prompt Management</strong>: prompt <strong>versioning + approval workflows + variable parameterization</strong> (required inputs as variables, output format specification) — the answer for "hundreds of templates across teams, version control + approval + audit"; enforces same-prompt-version reproducibility. <strong>Bedrock Flows</strong>: managed visual orchestration (S3 action nodes, expression nodes for deterministic parsing, prompt/agent nodes with guardrails) — less glue code than agent+Lambda. <strong>Intelligent prompt routing</strong>: auto-routes prompts to right-sized models by complexity — the native answer for "70% simple queries cheaper, 30% complex queries high quality, least effort."</p>
+<p><strong>相关题目</strong>: Q107(Prompt Mgmt), Q102(Flow-资助), Q76, Q80(医疗-Flows), Q89(审核流), Q89(路由)
+<strong>参考</strong>: https://docs.aws.amazon.com/bedrock/latest/userguide/flows.html ｜ https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management.html ｜ https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-routing.html</p>
+<hr />
+<h3 id="kp17-成本与延迟优化">KP17. 成本与延迟优化 ⭐⭐⭐</h3>
+<h3 id="cost-latency-optimization">Cost &amp; Latency Optimization</h3>
+<p><strong>中文详解</strong>：
+- <strong>Token 治理</strong>：Bedrock 只在调用后暴露 token 用量 → 主动额度管控需在 Lambda 内置<strong>模型专用 tokenizer 调用前估算</strong> + CloudWatch 告警 + DynamoDB 明细做成本分摊。
+- <strong>降延迟</strong>：<code>PerformanceConfigLatency=optimized</code>（免新增基础设施降推理延迟）；token batching 合并请求降开销；并行化独立调用；<strong>交互式请求绝不选 batch inference</strong>（离线异步）。
+- <strong>缓存陷阱</strong>：交互大多为唯一 → 缓存命中率低 → 别选缓存方案（考 2 次）。
+- <strong>SageMaker 实时端点</strong>：首 token 慢 → 最小实例数 &gt;0 消灭冷启动 + 响应流式 + 容器启动预加载模型 + 动态批处理；<strong>异步推理不适合交互聊天</strong>。</p>
+<p><strong>English Deep Dive</strong>: <strong>Token governance</strong>: Bedrock exposes token usage only after calls → proactive control needs model-specific <strong>tokenizers in Lambda for pre-call estimation</strong> + CloudWatch alarms + DynamoDB chargeback records. <strong>Latency</strong>: <code>PerformanceConfigLatency=optimized</code>; token batching; parallelize independent calls; <strong>never pick batch inference for interactive requests</strong>. <strong>Cache trap</strong>: if interactions are mostly unique, caches have low hit rates — don't pick caching (asked 2×). <strong>SageMaker real-time endpoints</strong>: min instances &gt; 0 (kill cold starts) + response streaming + model preloading + dynamic batching; async inference is not for chat.</p>
+<p><strong>相关题目</strong>: Q100(token), Q99/96(缓存), Q105(SageMaker 延迟), Q105(token batching), Q91
+<strong>参考</strong>: https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html</p>
+<hr />
+<h3 id="kp18-周边服务速记">KP18. 周边服务速记 ⭐⭐⭐</h3>
+<h3 id="peripheral-services-quick-notes">Peripheral Services Quick Notes</h3>
+<p><strong>中文详解</strong>：
+- <strong>Amazon Q Business</strong>：企业助手；S3 数据源用<strong>单一 acl.json</strong>（前缀→Identity Center 组映射）做文档级 ACL；<strong>data accessor</strong> 机制让数据留在客户侧、授权第三方受控可审计访问。
+- <strong>Amazon Q Developer customization</strong>：让代码建议基于组织内部代码库/规范——"强制新团队用批准库且不做项目级修改"的答案（项目内 rules 文件夹都是干扰项）。
+- <strong>Amplify AI Kit</strong>：AppSync/Amplify 架构内实现 GraphQL 流式响应的最低摩擦方案（治 RequestResponse 同步超时）。
+- <strong>SageMaker Neo</strong>：编译模型到目标硬件——"云+本地混合部署/边缘推理"信号。
+- <strong>Converse API vs Kendra</strong>：Kendra 偏企业搜索/FAQ，不是对话推荐 RAG——常作干扰项。</p>
+<p><strong>English Deep Dive</strong>: <strong>Q Business</strong>: single <strong>acl.json</strong> (prefix→Identity Center group mapping) for document-level ACLs on S3 data sources; the <strong>data accessor</strong> mechanism keeps data customer-side with controlled, auditable third-party access. <strong>Q Developer customization</strong> grounds code suggestions in your internal codebase — the answer for "enforce approved libraries with no project-level changes." <strong>Amplify AI Kit</strong>: lowest-friction streaming for AppSync/Amplify GraphQL. <strong>SageMaker Neo</strong> compiles models for edge/on-prem targets. <strong>Kendra</strong> is enterprise search/FAQ, not conversational RAG — a frequent distractor.</p>
+<p><strong>相关题目</strong>: Q99(Q Business ACL), Q97(data accessor), Q82(Q Developer), Q68(Amplify), Q93(Neo)
+<strong>参考</strong>: https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/what-is.html</p>
+<hr />
+<h1 id="第四部分107-题速查表按领域分组">第四部分：107 题速查表（按领域分组）</h1>
+<h1 id="part-4-question-quick-reference-grouped-by-domain">Part 4: Question Quick-Reference (Grouped by Domain)</h1>
+<blockquote>
+<p>用法：读"场景信号"一眼认题 → 直接锁定答案。⚠️ 注意题库 PDF 本身存在重复题号（如 Q104/Q106 多次出现），请按"场景信号"而非题号认题。
+Usage: recognize the question by its "signal" and lock in the answer. Note the source PDF has duplicate question numbers — match by scenario, not by number.</p>
+</blockquote>
+<h2 id="领域-1基础模型集成数据管理与合规-domain-1-27-题">领域 1：基础模型集成、数据管理与合规 / Domain 1 (27 题)</h2>
+<table>
+<thead>
+<tr>
+<th>场景信号 Signal</th>
+<th>答案</th>
+<th>速记要点 Key Point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据主张链接到源文档 + 托管 + &lt;3s</td>
+<td class="ans"><strong>A</strong></td>
+<td>KB source attribution + 高相关性阈值 + S3 审计</td>
+</tr>
+<tr>
+<td>每酒店数据隔离 + 近实时</td>
+<td class="ans"><strong>C</strong></td>
+<td>每租户一个 KB + 直接摄取/定期同步分层</td>
+</tr>
+<tr>
+<td>万级多模态文档（PDF/视频）+ 协作版本</td>
+<td class="ans"><strong>B</strong></td>
+<td>BDA + Textract/Transcribe + S3 版本 + AppSync subscriptions</td>
+</tr>
+<tr>
+<td>固定 500 token 分块切断法律论证</td>
+<td class="ans"><strong>C</strong></td>
+<td>语义边界分块 + 重新生成嵌入</td>
+</tr>
+<tr>
+<td>S3 金融数据预处理（质量/元数据/分块）</td>
+<td class="ans"><strong>B</strong></td>
+<td>Glue crawler + ETL + Data Quality 一站式</td>
+</tr>
+<tr>
+<td>小型专有向量库极致准确</td>
+<td class="ans"><strong>B</strong></td>
+<td>MemoryDB + HNSW + 垂直扩展</td>
+</tr>
+<tr>
+<td>漏精确医学术语/缩写</td>
+<td class="ans"><strong>A</strong></td>
+<td>OpenSearch hybrid search（向量+BM25）</td>
+</tr>
+<tr>
+<td>50GB JSON 去 PII 入向量库、4 小时、成本最优</td>
+<td class="ans"><strong>D</strong></td>
+<td>Step Functions + Comprehend + Bedrock 嵌入 + OpenSearch Serverless</td>
+</tr>
+<tr>
+<td>跨"方法/结果/讨论"章节引用（考 2 次）</td>
+<td class="ans"><strong>B</strong></td>
+<td>hierarchical chunking：父 1000 / 子 200 / 重叠 50</td>
+</tr>
+<tr>
+<td>图书推荐、1 万+ 并发</td>
+<td class="ans"><strong>A</strong></td>
+<td>KB + OpenSearch + Lambda + API Gateway</td>
+</tr>
+<tr>
+<td>无关键词、按含义匹配、&lt;100 万文件</td>
+<td class="ans"><strong>D</strong></td>
+<td>Titan Embeddings + Aurora pgvector Serverless</td>
+</tr>
+<tr>
+<td>千万级多语文档 + 元数据过滤</td>
+<td class="ans"><strong>A</strong></td>
+<td>OpenSearch Serverless + KB 集成</td>
+</tr>
+<tr>
+<td>投资工具↔板块↔监管多跳关系 &lt;3s</td>
+<td class="ans"><strong>A</strong></td>
+<td>KB GraphRAG + Neptune Analytics</td>
+</tr>
+<tr>
+<td>欧美低延迟 + 欧洲数据不出境 + 峰值配额</td>
+<td class="ans"><strong>B</strong></td>
+<td>地理代码 CRI profile + 分区 API Gateway</td>
+</tr>
+<tr>
+<td>输出完全可追溯（注册/归因/审计）</td>
+<td class="ans"><strong>D</strong></td>
+<td>Glue Data Catalog 标签归因 + CloudTrail</td>
+</tr>
+<tr>
+<td>财报表格↔解释文字关联</td>
+<td class="ans"><strong>B</strong></td>
+<td>KB 按文档结构上下文分块 + 引用</td>
+</tr>
+<tr>
+<td>展示推理过程 + 引用 + 1 万并发 2 秒</td>
+<td class="ans"><strong>A</strong></td>
+<td>Agents tracing + KB + API GW/Lambda/CloudFront</td>
+</tr>
+<tr>
+<td>S3 医学论文一致元数据框架</td>
+<td class="ans"><strong>A</strong></td>
+<td>系统元数据(时间)/用户元数据(作者)/对象标签(分类)</td>
+</tr>
+<tr>
+<td>临床建议只能基于获批文档 + 引用</td>
+<td class="ans"><strong>B</strong></td>
+<td>KB + RetrieveAndGenerate（原生引用）</td>
+</tr>
+<tr>
+<td>5000 万月活语义搜索、最少开发量</td>
+<td class="ans"><strong>D</strong></td>
+<td>迁入 KB，Retrieve API 直接自然语言查询</td>
+</tr>
+<tr>
+<td>餐厅语义搜索、95%&lt;500ms、小时级新鲜</td>
+<td class="ans"><strong>B</strong></td>
+<td>OpenSearch k-NN + 同一 Bedrock FM 嵌入文档与查询</td>
+</tr>
+<tr>
+<td>Q Business 按部门组控访问</td>
+<td class="ans"><strong>B</strong></td>
+<td>单一 acl.json（前缀→Identity Center 组）</td>
+</tr>
+<tr>
+<td>客户保留数据所有权 + 第三方受控检索</td>
+<td class="ans"><strong>A</strong></td>
+<td>Q Business data accessor 机制</td>
+</tr>
+<tr>
+<td>法律检索：语义 + 法条精确匹配</td>
+<td class="ans"><strong>B</strong></td>
+<td>OpenSearch hybrid search + Bedrock reranker</td>
+</tr>
+<tr>
+<td>外科医生看 PII / 工程师脱敏 / 只引 3 年内报告</td>
+<td class="ans"><strong>C</strong></td>
+<td>推理时按 Cognito 组选 guardrail + S3 Lifecycle</td>
+</tr>
+<tr>
+<td>欺诈检测：PII 不进生产 + 列级授权</td>
+<td class="ans"><strong>B</strong></td>
+<td>IAM 角色 + Lake Formation LF-Tag + CloudTrail</td>
+</tr>
+<tr>
+<td>Bedrock Flow 必填输入 + 霸凌只通知不阻断（选 2）</td>
+<td class="ans"><strong>AD</strong></td>
+<td>Prompt Mgmt 变量/格式 + insults 过滤器 detect 模式</td>
+</tr>
+</tbody>
+</table>
+<h2 id="领域-2实施与集成-domain-2-21-题">领域 2：实施与集成 / Domain 2 (21 题)</h2>
+<table>
+<thead>
+<tr>
+<th>场景信号 Signal</th>
+<th>答案</th>
+<th>速记要点 Key Point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>呼叫中心 &lt;1s、边说边转写、双向流式</td>
+<td class="ans"><strong>B</strong></td>
+<td>Transcribe streaming partial + InvokeModelWithResponseStream + WebSocket</td>
+</tr>
+<tr>
+<td>多 FM 动态路由、规则小时级变、不部署代码（考 2 次）</td>
+<td class="ans"><strong>C</strong></td>
+<td>Lambda + AppConfig Agent 拉配置</td>
+</tr>
+<tr>
+<td>S3 上传自动重训练重部署</td>
+<td class="ans"><strong>D</strong></td>
+<td>事件 → Lambda → Step Functions Standard → SageMaker Pipelines</td>
+</tr>
+<tr>
+<td>托管 FM API：流式 + token 上限 + 重试</td>
+<td class="ans"><strong>A</strong></td>
+<td>HTTP API + Lambda response streaming，上限在服务端强制</td>
+</tr>
+<tr>
+<td>混合部署（云+本地）+ 高吞吐批处理（选 2）</td>
+<td class="ans"><strong>BC</strong></td>
+<td>Provisioned Throughput + SageMaker Neo 边缘编译</td>
+</tr>
+<tr>
+<td>逐字符实时展示、数千并发、15–45s 响应</td>
+<td class="ans"><strong>A</strong></td>
+<td>WebSocket API + Lambda + 流式 API（禁前端直连持凭证）</td>
+</tr>
+<tr>
+<td>agent 跨交互记忆 + 双调用模式（选 2）</td>
+<td class="ans"><strong>AB</strong></td>
+<td>AgentCore + API Gateway/EventBridge 注册 actions</td>
+</tr>
+<tr>
+<td>澄清工作流 + 会话加密存储、数千并发</td>
+<td class="ans"><strong>B</strong></td>
+<td>Step Functions Standard（回调等待）+ DynamoDB on-demand+SSE</td>
+</tr>
+<tr>
+<td>多部门多智能体 + 数据隔离 + 易扩展（考 2 次）</td>
+<td class="ans"><strong>A</strong></td>
+<td>supervisor 路由 + collaborator + 每部门 KB/IAM</td>
+</tr>
+<tr>
+<td>跨 Lambda/EKS 多轮对话同一 FM</td>
+<td class="ans"><strong>D</strong></td>
+<td>Converse API + messages 数组 + IAM 角色</td>
+</tr>
+<tr>
+<td>电商幻觉出不存在商品 + 交互唯一（考 2 次）</td>
+<td class="ans"><strong>C</strong></td>
+<td>KB RAG 接地 + PerformanceConfigLatency=optimized</td>
+</tr>
+<tr>
+<td>Step Functions 中间输出超 256KB</td>
+<td class="ans"><strong>B</strong></td>
+<td>大对象存 S3，ResultPath/ResultSelector 只传引用</td>
+</tr>
+<tr>
+<td>强制团队用批准内部库、不改项目</td>
+<td class="ans"><strong>D</strong></td>
+<td>Amazon Q Developer customization</td>
+</tr>
+<tr>
+<td>简单扩展名路由 + 复杂语义路由 + 执行历史</td>
+<td class="ans"><strong>B</strong></td>
+<td>简单路由写代码内 + 复杂路由 Step Functions（JSONata）</td>
+</tr>
+<tr>
+<td>审核外发消息：S3 取→抽取部分→送模型→写回</td>
+<td class="ans"><strong>A</strong></td>
+<td>Bedrock Flows（S3 节点 + expression 解析 + agent 步骤）</td>
+</tr>
+<tr>
+<td>密钥过期/模板过期级联故障</td>
+<td class="ans"><strong>A</strong></td>
+<td>Map 状态并行 + Lambda 传最新元数据 + AppConfig 版本门控</td>
+</tr>
+<tr>
+<td>运行时切换模型提供商、安全发布可回滚</td>
+<td class="ans"><strong>B</strong></td>
+<td>AppConfig 存当前模型，Lambda 运行时读取</td>
+</tr>
+<tr>
+<td>Lambda 私有子网纯私有调 Bedrock + 跨账号列级授权</td>
+<td class="ans"><strong>A</strong></td>
+<td>interface VPC endpoint + Lake Formation LF-tag（⚠️原答案键标 B，解析实为 A）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="领域-3ai-安全保障与治理-domain-3-24-题">领域 3：AI 安全、保障与治理 / Domain 3 (24 题)</h2>
+<table>
+<thead>
+<tr>
+<th>场景信号 Signal</th>
+<th>答案</th>
+<th>速记要点 Key Point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UGC 图文审核 + PII + 接入 S3 工作流</td>
+<td class="ans"><strong>D</strong></td>
+<td>Step Functions 编排 Guardrails + Comprehend PII + Rekognition</td>
+</tr>
+<tr>
+<td>全组织禁止特定主题 + 只用获批模型（选 2）</td>
+<td class="ans"><strong>CD</strong></td>
+<td>SCP 强制 guardrail ID + StackSets 统一下发 block 策略</td>
+</tr>
+<tr>
+<td>SCP 限欧洲两区、FM 在他区、私有访问</td>
+<td class="ans"><strong>C</strong></td>
+<td>EU 范围 CRI profile + VPC endpoint + SCP 放行 profile</td>
+</tr>
+<tr>
+<td>金融客服：禁投资建议/PII/低误报/差异化动作</td>
+<td class="ans"><strong>C</strong></td>
+<td>单一 guardrail：medium + denied topics + 输入 block/输出 mask</td>
+</tr>
+<tr>
+<td>医疗端到端血缘 + 实时 PII + 自动合规报告</td>
+<td class="ans"><strong>A</strong></td>
+<td>Glue Catalog + Guardrails PII + CloudTrail + Macie</td>
+</tr>
+<tr>
+<td>数百 prompt 模板：版本+审批+审计+参数化</td>
+<td class="ans"><strong>B</strong></td>
+<td>Bedrock Prompt Management + IAM 审批权限 + CloudTrail</td>
+</tr>
+<tr>
+<td>防提示注入 + 干预审计 + 跨区域一致</td>
+<td class="ans"><strong>A</strong></td>
+<td>内容过滤 high + guardrail profile + CloudWatch Logs 干预事件</td>
+</tr>
+<tr>
+<td>视频平台：控 FM 访问模式 + 完整审计</td>
+<td class="ans"><strong>B</strong></td>
+<td>ABAC + 条件键锁 ModelId/Guardrail + VPC endpoint + CloudTrail Lake</td>
+</tr>
+<tr>
+<td>SCP 拒绝 Nova Pro CRI 调用（选 2）</td>
+<td class="ans"><strong>BE</strong></td>
+<td>SCP 放行 <code>eu.amazon.nova-pro-v1:0</code> / <code>eu-*</code> profile</td>
+</tr>
+<tr>
+<td>金融三件事：阻断高风险/禁竞争对手/有据可依（选 3）</td>
+<td class="ans"><strong>ADF</strong></td>
+<td>denied topics + 自定义词过滤 + 高 grounding 阈值</td>
+</tr>
+<tr>
+<td>银行 PII 双向过滤 + 审计含图片</td>
+<td class="ans"><strong>C</strong></td>
+<td>Guardrails 敏感信息+话题策略 + Converse + S3 delivery/image logging</td>
+</tr>
+<tr>
+<td>99.5% 一致性 + &lt;1s + 拦截危险建议</td>
+<td class="ans"><strong>A</strong></td>
+<td>Provisioned Throughput + Guardrails + Prompt Mgmt 审批</td>
+</tr>
+<tr>
+<td>银行贷款：扫描抽取 + 低置信转人工 + 驻留（选 3）</td>
+<td class="ans"><strong>ABD</strong></td>
+<td>Textract+A2I / 推理前 PII 脱敏+Guardrails / S3 元数据+区域化 IAM</td>
+</tr>
+<tr>
+<td>MCP server 只授权用户访问</td>
+<td class="ans"><strong>C</strong></td>
+<td>Lambda+API GW 托管 + Streamable HTTP + Cognito OAuth 2.1</td>
+</tr>
+<tr>
+<td>金融 60 天上线 + &lt;200ms + 幻觉监控</td>
+<td class="ans"><strong>A</strong></td>
+<td>Guardrails + Model Evaluation + DynamoDB TTL + CloudWatch</td>
+</tr>
+<tr>
+<td>法规要求 AI 建议必须人工审批</td>
+<td class="ans"><strong>B</strong></td>
+<td>Step Functions waitForTaskToken + DynamoDB 审批记录</td>
+</tr>
+<tr>
+<td>上线前评估 PII 防泄露 + 数据驻留</td>
+<td class="ans"><strong>B</strong></td>
+<td>测试 mask / 生产 block / 每 Region 各部署 guardrail</td>
+</tr>
+<tr>
+<td>三洲数据驻留 + 审计 + 数据分类</td>
+<td class="ans"><strong>C</strong></td>
+<td>S3 Object Lock+区域桶策略 + Macie 分类 + CloudTrail</td>
+</tr>
+<tr>
+<td>两个人口群体公平性实时监测 &gt;15% 告警</td>
+<td class="ans"><strong>B</strong></td>
+<td>Prompt Mgmt 变体 + Flows 分流 + guardrails 指标 + InvocationsIntervened 告警</td>
+</tr>
+<tr>
+<td>FM 只访问脱敏列子集 + 全量审计</td>
+<td class="ans"><strong>B</strong></td>
+<td>Lake Formation LF-Tag 授权 + CloudTrail</td>
+</tr>
+<tr>
+<td>Comprehend 三层过滤且全部在 FM 前完成</td>
+<td class="ans"><strong>D</strong></td>
+<td>并行 toxicity + prompt safety + PII redaction</td>
+</tr>
+<tr>
+<td>动物研究多模态 + 防推测性解读 + 伦理审计</td>
+<td class="ans"><strong>B</strong></td>
+<td>预处理摘要入 KB + guardrails 限推测 + AppConfig + CloudTrail</td>
+</tr>
+<tr>
+<td>Entra ID 认证 + 私有网络 + 按部门限模型</td>
+<td class="ans"><strong>A</strong></td>
+<td>SAML 联合 + IAM 角色限 ModelId + PrivateLink + 双层审计</td>
+</tr>
+<tr>
+<td>5 业务单元标准化组件 + 部署前强制合规</td>
+<td class="ans"><strong>B</strong></td>
+<td>CloudFormation 模板库 + Guard 在 CI/CD 预部署拦截</td>
+</tr>
+</tbody>
+</table>
+<h2 id="领域-4运营效率与优化-domain-4-22-题">领域 4：运营效率与优化 / Domain 4 (22 题)</h2>
+<table>
+<thead>
+<tr>
+<th>场景信号 Signal</th>
+<th>答案</th>
+<th>速记要点 Key Point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAG 检索语义相似但无关、最少运维</td>
+<td class="ans"><strong>D</strong></td>
+<td>KB 内置 reranking 配置（优于调 Rerank API）</td>
+</tr>
+<tr>
+<td>买了 PT 仍按需限流、容量闲置（考 2 次）</td>
+<td class="ans"><strong>B</strong></td>
+<td>modelId 换成 provisioned 模型 ARN</td>
+</tr>
+<tr>
+<td>主动 token 额度预警 + 5000 请求/分 + 成本分摊</td>
+<td class="ans"><strong>A</strong></td>
+<td>Lambda 内置 tokenizer 调用前估算 + CloudWatch + DynamoDB</td>
+</tr>
+<tr>
+<td>70% 简单 / 30% 复杂问题省钱路由</td>
+<td class="ans"><strong>B</strong></td>
+<td>Bedrock intelligent prompt routing</td>
+</tr>
+<tr>
+<td>token 消耗突增定位到工具、阈值自适应</td>
+<td class="ans"><strong>C</strong></td>
+<td>invocation logs + metric filters + anomaly detection</td>
+</tr>
+<tr>
+<td>间歇超时 + 流断裂 + 防压垮服务</td>
+<td class="ans"><strong>B</strong></td>
+<td>指数退避+jitter + 熔断器 + 断点续流</td>
+</tr>
+<tr>
+<td>峰值 3 倍、多 Region、&lt;2s</td>
+<td class="ans"><strong>B</strong></td>
+<td>token batching + cross-Region inference profiles</td>
+</tr>
+<tr>
+<td>医疗问答语义稀释 + 术语消歧</td>
+<td class="ans"><strong>B</strong></td>
+<td>KB query decomposition + Bedrock Flows 编排</td>
+</tr>
+<tr>
+<td>50 万并发 &lt;200ms + 月度预算</td>
+<td class="ans"><strong>B</strong></td>
+<td>低延迟模型 + PT + 自动扩缩</td>
+</tr>
+<tr>
+<td>串行 45s 压到 10s</td>
+<td class="ans"><strong>B</strong></td>
+<td>Step Functions Parallel 并行独立调用</td>
+</tr>
+<tr>
+<td>token 可视化 + 多角色仪表盘（选 2）</td>
+<td class="ans"><strong>CD</strong></td>
+<td>CloudWatch 原生指标 + Managed Grafana zero-ETL</td>
+</tr>
+<tr>
+<td>金丝雀发布自动切流自动回滚</td>
+<td class="ans"><strong>A</strong></td>
+<td>EventBridge → Step Functions 分阶段 + Lambda 查 CloudWatch</td>
+</tr>
+<tr>
+<td>基线退化 + 10 分钟关联告警（考 2 次）</td>
+<td class="ans"><strong>C</strong></td>
+<td>Application Insights + EMF 维度指标 + anomaly detection + Logs Insights</td>
+</tr>
+<tr>
+<td>幻觉 + token 异常 + 成本预警近实时</td>
+<td class="ans"><strong>C</strong></td>
+<td>调用日志存 S3 + grounding check + token anomaly detection</td>
+</tr>
+<tr>
+<td>全球时区限流 + 低谷无固定费用</td>
+<td class="ans"><strong>C</strong></td>
+<td>CRI 分散流量（on-demand），监控 InvocationThrottles</td>
+</tr>
+<tr>
+<td>瞬态错误 + 级联防护 + 按模型关联延迟</td>
+<td class="ans"><strong>B</strong></td>
+<td>SDK 标准重试 + X-Ray 注解（model ID/参数/Region）</td>
+</tr>
+<tr>
+<td>欧美驻留 + 峰值配额降级（考 2 次）</td>
+<td class="ans"><strong>B</strong></td>
+<td>地理代码 CRI profile + 分区 API Gateway 端点</td>
+</tr>
+<tr>
+<td>按客户等级切模型 + A/B + 参数校验</td>
+<td class="ans"><strong>C</strong></td>
+<td>AppConfig feature flags + JSON schema + Agent 缓存</td>
+</tr>
+<tr>
+<td>SageMaker 首 token 2s 放弃、p95&lt;800ms（选 2）</td>
+<td class="ans"><strong>AD</strong></td>
+<td>预热+动态批处理；min instances&gt;0 + 响应流式</td>
+</tr>
+<tr>
+<td>多 Region prompt 链不一致 + 危险建议</td>
+<td class="ans"><strong>A</strong></td>
+<td>PT 稳延迟 + Guardrails 拦截 + Prompt Mgmt 版本审批</td>
+</tr>
+</tbody>
+</table>
+<h2 id="领域-5测试验证与故障排除-domain-5-11-题">领域 5：测试、验证与故障排除 / Domain 5 (11 题)</h2>
+<table>
+<thead>
+<tr>
+<th>场景信号 Signal</th>
+<th>答案</th>
+<th>速记要点 Key Point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>横向比 chunking 策略 + 评两个 FM + 质量阈值</td>
+<td class="ans"><strong>B</strong></td>
+<td>retrieve-and-generate 评估 + 固定同一 judge + 数值评分门禁</td>
+</tr>
+<tr>
+<td>样例提示自动生成各 FM 评估报告</td>
+<td class="ans"><strong>B</strong></td>
+<td>JSONL 放 S3 + Bedrock 评估作业；judge 固定，候选 FM 是 generator</td>
+</tr>
+<tr>
+<td>AppSync 同步调用 RAG 频繁超时</td>
+<td class="ans"><strong>A</strong></td>
+<td>Amplify AI Kit 流式响应（最小改动）</td>
+</tr>
+<tr>
+<td>自动规模评估 + 定向人工复审</td>
+<td class="ans"><strong>B</strong></td>
+<td>Evaluations（LLM judge）+ Guardrails + A2I</td>
+</tr>
+<tr>
+<td>多语言不一致 + 45 分钟 1.5 万会话 + CI/CD 门禁</td>
+<td class="ans"><strong>D</strong></td>
+<td>语义等价多语测试集 + 评估作业并行 + 相似度/幻觉阈值</td>
+</tr>
+<tr>
+<td>复杂文档输出不一致：诊断+对比+版本史</td>
+<td class="ans"><strong>B</strong></td>
+<td>prompt 版本控制 + 量化指标测试套件 + 自动化回归</td>
+</tr>
+<tr>
+<td>50–200 页文档超窗口截断</td>
+<td class="ans"><strong>C</strong></td>
+<td>语义分块（percentile 95%）+ RetrieveAndGenerate 动态检索</td>
+</tr>
+<tr>
+<td>医疗 RAG：检索准确率 + 幻觉 + 降人工成本</td>
+<td class="ans"><strong>D</strong></td>
+<td>LLM-as-a-judge 初筛 + 边缘案例人工 + 内置 RAG 指标</td>
+</tr>
+<tr>
+<td>电商内部评估平台上 CloudWatch（选 2）</td>
+<td class="ans"><strong>BC</strong></td>
+<td>S3 数据集+IAM/VPC endpoint；Lambda 定时建评估作业发指标</td>
+</tr>
+<tr>
+<td>prompt 模板 QA + 不达标禁部署</td>
+<td class="ans"><strong>B</strong></td>
+<td>evaluation jobs + CodePipeline 触发 + 阈值门禁</td>
+</tr>
+<tr>
+<td>KB 检索过宽（类型/时间）、嵌入已最优</td>
+<td class="ans"><strong>C</strong></td>
+<td>metadata-aware filtering 收窄候选集</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="第五部分资深专家补充-题库之外你必须掌握的考点">第五部分：资深专家补充 —— 题库之外你必须掌握的考点</h1>
+<h1 id="part-5-expert-supplements-beyond-the-107-questions">Part 5: Expert Supplements — Beyond the 107 Questions</h1>
+<blockquote>
+<p>以下内容来自资深 AWS GenAI 架构师视角：题库 107 题覆盖了大部分考点，但官方考纲中还有这些"隐性重点"，考场上遇到不至于陌生。
+From a senior AWS GenAI architect's perspective: the bank covers most topics, but these "hidden weights" from the official syllabus may still appear.</p>
+</blockquote>
+<h2 id="s1-推理参数与输出确定性-inference-parameters-determinism-必补">S1. 推理参数与输出确定性 / Inference Parameters &amp; Determinism ⭐必补</h2>
+<p><strong>中文</strong>：
+- <strong>temperature</strong>（0–1）：越低越确定。要"一致输出/可复现"→ temperature 设低（0–0.2）；要"创意"→ 调高。幻觉场景<strong>绝不能</strong>建议升 temperature（反向陷阱）。
+- <strong>top-p / top-k</strong>：核采样与候选截断，与 temperature 配合控制多样性。
+- <strong>maxTokens</strong>：输出上限；配合 stopSequences 控制结构化输出。
+- 可复现性组合拳 = 固定 prompt 版本 + 固定推理参数 + provisioned 容量。
+- <strong>Converse API 的 inferenceConfig / additionalModelRequestFields</strong>：统一传参口。</p>
+<p><strong>English</strong>: <strong>temperature</strong> — lower = more deterministic (0–0.2 for reproducibility; never raise it to fight hallucination — a reverse trap). <strong>top-p/top-k</strong> — nucleus sampling and candidate truncation. <strong>maxTokens</strong> + <strong>stopSequences</strong> for structured output. Reproducibility = fixed prompt version + fixed inference parameters + provisioned capacity. Use Converse's <code>inferenceConfig</code> / <code>additionalModelRequestFields</code>.</p>
+<p>📖 https://docs.aws.amazon.com/bedrock/latest/userguide/inference-parameters.html</p>
+<h2 id="s2-rag-vs-微调-vs-继续预训练-决策矩阵-rag-vs-fine-tuning-vs-continued-pre-training-必补">S2. RAG vs 微调 vs 继续预训练 决策矩阵 / RAG vs Fine-Tuning vs Continued Pre-Training ⭐必补</h2>
+<p><strong>中文</strong>（决策题高频）：
+| 需求 Need | 选择 Choice |
+|---|---|
+| 知识新鲜、需引用、数据常变 | <strong>RAG</strong>（首选，成本低见效快） |
+| 改变模型行为/风格/格式、领域术语对齐 | <strong>Fine-tuning</strong>（需标注数据集，PT 托管运行） |
+| 注入大量领域知识（语料级） | <strong>Continued Pre-training</strong>（未标注语料） |
+| 自带训练好的模型上 Bedrock | <strong>Custom Model Import</strong> |
+- 口诀：<strong>先 RAG，再 prompt，最后才微调</strong>。微调模型只能用 Provisioned Throughput 调用。</p>
+<p><strong>English</strong>: Fresh knowledge + citations → <strong>RAG first</strong>; change model behavior/style/format → <strong>fine-tuning</strong> (labeled data, invoked via Provisioned Throughput); inject corpus-level domain knowledge → <strong>continued pre-training</strong> (unlabeled corpus); bring your own trained model → <strong>Custom Model Import</strong>. Mantra: RAG first, prompt engineering second, fine-tune last.</p>
+<p>📖 https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html</p>
+<h2 id="s3-bedrock-agents-深入-bedrock-agents-deep-dive">S3. Bedrock Agents 深入 / Bedrock Agents Deep Dive</h2>
+<p><strong>中文</strong>：
+- <strong>Action Groups</strong>：agent 可调用的工具，用 <strong>OpenAPI schema</strong> 定义 API 或 Lambda 函数。
+- <strong>Return of Control (RoC)</strong>：agent 把参数返回给调用方、由调用方自己执行——适合已有后端系统/不便暴露 Lambda 的场景。
+- <strong>记忆与上下文</strong>：会话内记忆默认开启；<strong>memory（跨会话长期记忆）</strong> 可配保留天数。
+- <strong>Code Interpretation</strong>：agent 生成并运行代码做数据分析/图表。
+- <strong>编排原理</strong>：ReAct 循环（推理→行动→观察）；trace 可看每步。</p>
+<p><strong>English</strong>: <strong>Action Groups</strong> define tools via <strong>OpenAPI schemas</strong> or Lambda; <strong>Return of Control</strong> hands parameters back to the caller to execute (fits existing backends); session memory is on by default, long-term <strong>memory</strong> has configurable retention; <strong>Code Interpretation</strong> lets agents run generated code; orchestration follows a ReAct loop visible in traces.</p>
+<p>📖 https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html</p>
+<h2 id="s4-prompt-engineering-技术清单-prompt-engineering-checklist">S4. Prompt Engineering 技术清单 / Prompt Engineering Checklist</h2>
+<p><strong>中文</strong>：zero-shot / few-shot（给示例）/ chain-of-thought（逐步推理，注意增加 token 与延迟）/ system prompts（设定角色与边界）/ Claude 的 XML 标签结构化输入 / 指令放在数据前还是后（Claude 推荐长文档放前、问题放后）/ 负面指令 vs 正面指令（说"要做什么"优于"不要做什么"）。考试考的是<strong>权衡</strong>：CoT 提准确率但增延迟成本——高吞吐场景是干扰项。</p>
+<p><strong>English</strong>: zero-shot / few-shot / chain-of-thought (better reasoning but more tokens and latency — a distractor in high-throughput scenarios) / system prompts / XML tags for Claude / instruction placement (long docs first, question last for Claude) / positive over negative instructions. The exam tests <strong>trade-offs</strong>, not definitions.</p>
+<p>📖 https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-engineering-guidelines.html</p>
+<h2 id="s5-负责任-ai-与合规框架-responsible-ai-compliance-frameworks">S5. 负责任 AI 与合规框架 / Responsible AI &amp; Compliance Frameworks</h2>
+<p><strong>中文</strong>：AWS Responsible AI 六维度：公平性 fairness、可解释性 explainability、隐私 privacy、安全 security、稳健性 robustness、治理 governance。工具映射：公平性→SageMaker Clarify（离线偏差分析，<strong>不是</strong>实时监控）；幻觉→Guardrails grounding；隐私→PII 过滤+KMS 加密；审计→CloudTrail+invocation logging。合规框架词：GDPR（数据驻留/被遗忘权）、HIPAA、SOC、ISO/IEC 42001（AI 管理体系）。<strong>AI 生成内容溯源</strong>：数字水印与内容凭证（C2PA）。</p>
+<p><strong>English</strong>: AWS Responsible AI dimensions: fairness, explainability, privacy, security, robustness, governance. Tool mapping: fairness → SageMaker Clarify (offline bias analysis, <strong>not</strong> real-time); hallucination → Guardrails grounding; privacy → PII filters + KMS; audit → CloudTrail + invocation logging. Frameworks: GDPR (residency/erasure), HIPAA, SOC, ISO/IEC 42001. Provenance: watermarking and content credentials (C2PA).</p>
+<p>📖 https://docs.aws.amazon.com/bedrock/latest/userguide/responsible-use.html</p>
+<h2 id="s6-数据安全与加密-data-security-encryption">S6. 数据安全与加密 / Data Security &amp; Encryption</h2>
+<p><strong>中文</strong>：静态加密用 <strong>KMS</strong>（S3、DynamoDB、CloudWatch Logs、KB 向量库均可 CMK）；传输中 TLS；<strong>Bedrock 不会用客户数据训练基础模型</strong>（重要承诺，可能直接考）；VPC endpoint 让推理流量不出私网；删除数据时注意 KB 需重新同步（StartIngestionJob）；S3 Object Lock 做 WORM 留存。</p>
+<p><strong>English</strong>: Encrypt at rest with <strong>KMS</strong> (S3, DynamoDB, logs, KB vector stores support CMKs); TLS in transit; <strong>Bedrock never trains base FMs on customer data</strong> (a directly testable commitment); VPC endpoints keep inference private; re-sync KBs (StartIngestionJob) after source changes; S3 Object Lock for WORM retention.</p>
+<p>📖 https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html</p>
+<h2 id="s7-配额吞吐与成本计算-quotas-throughput-cost-math">S7. 配额、吞吐与成本计算 / Quotas, Throughput &amp; Cost Math</h2>
+<p><strong>中文</strong>：On-demand 有账户级 TPS/TPM 配额（Service Quotas 可申请提升）；PT 按 <strong>Model Unit 小时</strong>计费，1 MU 的吞吐因模型而异；估算公式：峰值 TPS × 每请求 token × 安全边际 → MU 数。<strong>Batch inference</strong>：离线异步、结果写 S3、价格更低——"非实时大批量"信号。成本优化顺序：路由到小模型 → 缩短 prompt/上下文 → 缓存（仅高重复场景）→ batch → PT 承诺折扣。</p>
+<p><strong>English</strong>: On-demand has account-level TPS/TPM quotas (raise via Service Quotas); PT bills per <strong>Model Unit-hour</strong>, MU throughput varies by model; sizing: peak TPS × tokens/request × safety margin → MUs. <strong>Batch inference</strong>: async, results to S3, cheaper — the "non-real-time bulk" signal. Cost optimization order: route to smaller models → shorten prompts/context → cache (only high-repetition) → batch → PT commitment discounts.</p>
+<p>📖 https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html ｜ https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html</p>
+<h2 id="s8-rag-评估指标-rag-evaluation-metrics">S8. RAG 评估指标 / RAG Evaluation Metrics</h2>
+<p><strong>中文</strong>：检索侧：context precision（检准）、context recall（检全）、precision@k；生成侧：faithfulness（忠于上下文，幻觉反面）、answer relevancy、correctness。开源框架 <strong>RAGAS</strong> 常被提及（自建环境，考试答案更偏 Bedrock 托管评估）。LLM-as-a-judge 评分尺度要数值化（1–5）才能做门禁。</p>
+<p><strong>English</strong>: Retrieval: context precision/recall, precision@k. Generation: faithfulness (anti-hallucination), answer relevancy, correctness. Open-source <strong>RAGAS</strong> is often referenced (self-managed; exam answers favor managed Bedrock evaluation). Judge scores must be numeric (1–5) to serve as gates.</p>
+<p>📖 https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html</p>
+<h2 id="s9-多模态与嵌入细节-multimodality-embedding-details">S9. 多模态与嵌入细节 / Multimodality &amp; Embedding Details</h2>
+<p><strong>中文</strong>：<strong>Titan Multimodal Embeddings</strong> 支持图文联合向量（以文搜图）；Titan Text Embeddings V2 支持<strong>维度裁剪</strong>（1024/512/256）降存储成本；嵌入维度越高越准但越贵越慢（题目里"升维度解决质量问题"几乎都是干扰项）。图像理解用 Claude/Nova 多模态模型直接读图；视频/音频先 BDA/Transcribe 转文本再入 RAG。</p>
+<p><strong>English</strong>: <strong>Titan Multimodal Embeddings</strong> for joint image-text vectors (text-to-image search); Titan Text Embeddings V2 supports <strong>dimension truncation</strong> (1024/512/256) to cut storage cost; higher dimensions = more accurate but slower/pricier ("raise dimensions to fix quality" is almost always a distractor). Use Claude/Nova multimodal models for direct image understanding; transcode video/audio to text (BDA/Transcribe) before RAG.</p>
+<p>📖 https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html</p>
+<h2 id="s10-十大考场陷阱-top-10-exam-traps">S10. 十大考场陷阱 / Top 10 Exam Traps</h2>
+<p><strong>中文</strong>（每条都来自题库干扰项规律）：
+1. 升向量维度 ≠ 提升检索质量（只增成本）。
+2. 静态阈值告警 ≠ "自动调整基线"（选 anomaly detection）。
+3. CloudTrail ≠ 分布式追踪（追踪选 X-Ray）；CloudTrail 也 ≠ 护栏干预级日志（选 invocation logging / CloudWatch Logs）。
+4. 只授权 agent ≠ 用户级授权（MCP 场景要 OAuth/Cognito）。
+5. 缓存不是万能的——交互唯一时缓存是错误答案。
+6. 固定延迟重试 = 重试风暴；必须退避 + jitter。
+7. content filter 屏蔽不了竞争对手名字（用自定义词过滤）；denied topics 才是话题级拦截。
+8. 部署后再合规检查 = 错（Guard 要放 CI/CD 预部署）。
+9. 批处理/异步推理不能用于交互式实时场景。
+10. "自建 SageMaker 端点/自建管道"选项在"least operational overhead"题里 99% 是干扰项。</p>
+<p><strong>English</strong>: ① Higher vector dims ≠ better retrieval. ② Static thresholds ≠ auto-adjusting baselines (pick anomaly detection). ③ CloudTrail ≠ distributed tracing (X-Ray) nor guardrail-intervention logs (invocation logging). ④ Authorizing the agent ≠ user-level authorization (MCP needs OAuth/Cognito). ⑤ Caching fails when interactions are unique. ⑥ Fixed-delay retries = retry storms; use backoff + jitter. ⑦ Content filters can't block competitor names (word filters); denied topics work at topic level. ⑧ Post-deploy compliance checks are wrong (Guard belongs in pre-deploy CI/CD). ⑨ Batch/async inference never fits interactive real-time. ⑩ Self-managed SageMaker/pipeline options are ~99% distractors in "least operational overhead" questions.</p>
+<hr />
+<h1 id="第六部分备考策略与资源-part-6-exam-strategy-resources">第六部分：备考策略与资源 / Part 6: Exam Strategy &amp; Resources</h1>
+<h2 id="学习路径-study-path">学习路径 / Study Path</h2>
+<p><strong>中文</strong>：
+1. <strong>第 1–2 天</strong>：精读 Tier 1 六个知识点（KP1–KP6），对照速查表领域 1、2 刷题。
+2. <strong>第 3 天</strong>：Tier 2（KP7–KP13）+ 领域 3、4 刷题——Guardrails 和 CloudWatch 套路必须形成条件反射。
+3. <strong>第 4 天</strong>：Tier 3 + 领域 5 + 专家补充 S1–S10。
+4. <strong>第 5 天</strong>：只刷速查表"场景信号 → 答案"列，做到 3 秒认题；复习十大陷阱。
+5. <strong>考试当天</strong>：先扫题干找关键词（least operational overhead / real-time / data residency / least development effort），多选题先数要选几项再逐个排除。</p>
+<p><strong>English</strong>:
+1. <strong>Days 1–2</strong>: Master Tier 1 (KP1–KP6); drill Domains 1–2 with the quick-reference table.
+2. <strong>Day 3</strong>: Tier 2 (KP7–KP13) + Domains 3–4 — Guardrails and CloudWatch patterns must become reflexes.
+3. <strong>Day 4</strong>: Tier 3 + Domain 5 + supplements S1–S10.
+4. <strong>Day 5</strong>: Drill the "Signal → Answer" columns only until you recognize questions in 3 seconds; review the Top 10 traps.
+5. <strong>Exam day</strong>: scan for keywords (least operational overhead / real-time / data residency / least development effort); for multi-select, note how many to pick before eliminating.</p>
+<h2 id="关键词词典-keyword-dictionary">关键词词典 / Keyword Dictionary</h2>
+<table>
+<thead>
+<tr>
+<th>英文关键词</th>
+<th>指向答案 Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LEAST operational overhead / LEAST development effort</td>
+<td>托管服务（Knowledge Bases / KB 内置功能 / Step Functions / Glue）</td>
+</tr>
+<tr>
+<td>real-time / bidirectional / streaming</td>
+<td>WebSocket + 流式 API（InvokeModelWithResponseStream）</td>
+</tr>
+<tr>
+<td>data residency / must remain in Europe</td>
+<td>地理范围 cross-Region inference profile</td>
+</tr>
+<tr>
+<td>throttling at peak / no fixed cost</td>
+<td>CRI 分散（on-demand）；steady throughput → Provisioned</td>
+</tr>
+<tr>
+<td>hallucination / grounded in sources</td>
+<td>RAG 接地 + contextual grounding check + citations</td>
+</tr>
+<tr>
+<td>multi-turn conversation / context across turns</td>
+<td>Converse API messages 数组</td>
+</tr>
+<tr>
+<td>human review / approval required</td>
+<td>A2I / Step Functions waitForTaskToken</td>
+</tr>
+<tr>
+<td>version + approval workflow + audit for prompts</td>
+<td>Bedrock Prompt Management</td>
+</tr>
+<tr>
+<td>without redeploying / change rules dynamically</td>
+<td>AWS AppConfig</td>
+</tr>
+<tr>
+<td>baseline deviation / auto-adjusting thresholds</td>
+<td>CloudWatch anomaly detection</td>
+</tr>
+<tr>
+<td>column-level / cross-account data lake access</td>
+<td>Lake Formation LF-Tags</td>
+</tr>
+<tr>
+<td>only approved models / enforce guardrail usage</td>
+<td>IAM 条件键 + SCP</td>
+</tr>
+<tr>
+<td>private connectivity</td>
+<td>interface VPC endpoint (PrivateLink)</td>
+</tr>
+<tr>
+<td>exact terms missed / acronyms</td>
+<td>hybrid search（向量+BM25）</td>
+</tr>
+<tr>
+<td>cross-section / long-document context</td>
+<td>hierarchical chunking / semantic chunking</td>
+</tr>
+</tbody>
+</table>
+<h2 id="官方资源-official-resources">官方资源 / Official Resources</h2>
+<ul>
+<li>考试指南 Exam Guide：https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html</li>
+<li>AWS 认证主页：https://aws.amazon.com/certification/certified-generative-ai-developer-professional/</li>
+<li>Bedrock 用户指南：https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html</li>
+<li>Well-Architected GenAI Lens：https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/welcome.html</li>
+<li>AWS Skill Builder（官方课程与模拟题）：https://skillbuilder.aws/</li>
+<li>Bedrock Workshop（动手实验）：https://github.com/aws-samples/amazon-bedrock-samples</li>
+</ul>
+<hr />
+<p><em>本指南基于 107 题题库（含官方解析）系统提炼，知识点按"题库频率 × 考试权重"排序。祝考试顺利！</em>
+<em>Distilled from the 107-question bank with official explanations; ranked by frequency × weight. Good luck!</em></p></main>
+</div>
+<script>
+// Highlight active TOC item on scroll
+const links = document.querySelectorAll('nav.toc a');
+const map = new Map();
+links.forEach(a => {
+  const id = a.getAttribute('href').slice(1);
+  const el = document.getElementById(id);
+  if (el) map.set(el, a);
+});
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.style.borderLeftColor = 'transparent');
+      const a = map.get(e.target);
+      if (a) { a.style.borderLeftColor = '#ec7211'; a.style.background = '#fff3e6'; }
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px' });
+map.forEach((_, el) => obs.observe(el));
+</script>
+</body>
+</html>
