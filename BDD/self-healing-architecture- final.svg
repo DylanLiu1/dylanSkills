@@ -1,0 +1,248 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="900" height="920" viewBox="0 0 900 920" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+<title>Easy Test Agent · 架构</title>
+<desc>Easy Test UI 平台经 Agent 服务做补全与对话；执行器只读 Test Case KB；失败后经证据采集、规则分诊、Agent 召回决策、验证、Patch、审批，双库原子回写</desc>
+<style>
+  .bg { fill: #FFFFFF; }
+  .title { font-size: 16px; font-weight: 600; fill: #2C2C2A; letter-spacing: 0.2px; }
+  .sub { font-size: 11px; fill: #8A8981; }
+  .cap { font-size: 10.5px; fill: #6B6A64; }
+  .box { fill: #F8F7F3; stroke: #B9B7AE; stroke-width: 0.8; }
+  .chip { fill: #FFFFFF; stroke: #C9C7BE; stroke-width: 0.7; }
+  .src { fill: #FDF4E6; stroke: #C77A1E; stroke-width: 0.8; }
+  .red { fill: #FCEBEB; stroke: #D14343; stroke-width: 0.8; }
+  .amber { fill: #FAEEDA; stroke: #BA7517; stroke-width: 0.8; }
+  .card { fill: #F7F6FE; stroke: #8E86DE; stroke-width: 1; }
+  .lane { fill: #FFFFFF; stroke: #CBC7F2; stroke-width: 0.8; }
+  .tm { font-size: 12px; font-weight: 500; fill: #2C2C2A; }
+  .ts { font-size: 10.5px; fill: #5F5E5A; }
+  .tss { font-size: 9.5px; fill: #6B6A64; }
+  .fw { font-size: 10px; fill: #12523D; font-family: ui-monospace, Menlo, monospace; }
+  .dbh { font-size: 12px; font-weight: 500; fill: #0F4C36; }
+  .dbe { stroke: #6FBBA0; stroke-width: 0.9; }
+  .dbd { fill: none; stroke: #6FBBA0; stroke-width: 0.8; stroke-dasharray: 4 4; opacity: 0.75; }
+  .dbnote { font-size: 9px; fill: #4E8A74; }
+  .badge { fill: #534AB7; }
+  .bt { font-size: 9px; font-weight: 500; fill: #FFFFFF; }
+  .fE { fill: none; stroke: #6E63D6; stroke-width: 1.4; stroke-dasharray: 5 4; animation: flow 1.7s linear infinite; }
+  .fB { fill: none; stroke: #2F7DBF; stroke-width: 1.4; stroke-dasharray: 5 4; animation: flow 1.5s linear infinite; }
+  .fO { fill: none; stroke: #C77A1E; stroke-width: 1.4; stroke-dasharray: 5 4; animation: flow 1.9s linear infinite; }
+  .fG { fill: none; stroke: #2E9E6B; stroke-width: 1.4; stroke-dasharray: 3 5; animation: flow 2.6s linear infinite; }
+  .lE { fill: #534AB7; } .lB { fill: #2F7DBF; } .lO { fill: #C77A1E; } .lG { fill: #2E9E6B; }
+  .hl { fill: none; stroke: #6E63D6; stroke-width: 2.2; opacity: 0; animation: hl 13s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -18; } }
+  @keyframes hl { 0%, 6% { opacity: 1; } 7%, 100% { opacity: 0; } }
+</style>
+<defs>
+  <marker id="mE" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#6E63D6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="mB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#2F7DBF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="mO" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#C77A1E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="mG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#2E9E6B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <linearGradient id="dbfill" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F5FCF8"/>
+    <stop offset="1" stop-color="#DDF2E9"/>
+  </linearGradient>
+  <linearGradient id="dbtop" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#DAF2E5"/>
+    <stop offset="1" stop-color="#C6ECDB"/>
+  </linearGradient>
+  <filter id="sh" x="-25%" y="-25%" width="150%" height="150%">
+    <feDropShadow dx="0" dy="1.5" stdDeviation="2.2" flood-color="#1D9E75" flood-opacity="0.12"/>
+  </filter>
+</defs>
+
+<rect class="bg" x="0" y="0" width="900" height="920"/>
+<text class="title" x="36" y="29">Easy Test Agent</text>
+
+<!-- Easy Test UI 平台 -->
+<rect x="32" y="56" width="248" height="156" rx="10" fill="#F2F6FC" stroke="#A9C2DF" stroke-width="0.9"/>
+<text class="tm" x="48" y="76">Easy Test UI 平台</text>
+<rect x="44" y="82" width="224" height="26" rx="6" fill="#E9F5E3" stroke="#93C575" stroke-width="0.7"/>
+<circle cx="55" cy="95" r="3" fill="#6FA84E"/>
+<text class="ts" x="64" y="99" style="fill:#3F6B2C">① Workflow 编辑 · DSL</text>
+<rect x="44" y="112" width="224" height="26" rx="6" fill="#FCF4E6" stroke="#DCBB7A" stroke-width="0.7"/>
+<circle cx="55" cy="125" r="3" fill="#CF9F45"/>
+<text class="ts" x="64" y="129" style="fill:#8A5F16">② Smart fill · 自然语言补全</text>
+<rect x="44" y="142" width="224" height="26" rx="6" fill="#FCF4E6" stroke="#DCBB7A" stroke-width="0.7"/>
+<circle cx="55" cy="155" r="3" fill="#CF9F45"/>
+<text class="ts" x="64" y="159" style="fill:#8A5F16">③ AI Chat · 查询 / 复制修改 case</text>
+<rect x="44" y="172" width="224" height="26" rx="6" fill="#F4F3EF" stroke="#C6C4BA" stroke-width="0.7"/>
+<circle cx="55" cy="185" r="3" fill="#A8A69B"/>
+<text class="ts" x="64" y="189" style="fill:#77756C">④ 修复 Test case</text>
+
+<!-- Test Case KB -->
+<g filter="url(#sh)">
+  <path d="M338 74 L338 196 A95 12 0 0 0 528 196 L528 74 Z" fill="url(#dbfill)" class="dbe"/>
+  <ellipse cx="433" cy="74" rx="95" ry="12" fill="url(#dbtop)" class="dbe"/>
+</g>
+<text class="dbh" x="433" y="74" text-anchor="middle" dominant-baseline="central">Test Case KB</text>
+<path class="dbd" d="M338 96 A95 12 0 0 0 528 96"/>
+<circle cx="352" cy="116" r="1.8" fill="#1D9E75"/><text class="fw" x="361" y="116" dominant-baseline="central">description</text>
+<circle cx="352" cy="140" r="1.8" fill="#1D9E75"/><text class="fw" x="361" y="140" dominant-baseline="central">DSL JSON</text>
+<circle cx="352" cy="164" r="1.8" fill="#1D9E75"/><text class="fw" x="361" y="164" dominant-baseline="central">metadata</text>
+<circle cx="352" cy="188" r="1.8" fill="#1D9E75"/><text class="fw" x="361" y="188" dominant-baseline="central">向量索引</text>
+<text class="dbnote" x="404" y="224" text-anchor="middle">按 case 存 · 版本化</text>
+
+<!-- UI 元素 KB -->
+<g filter="url(#sh)">
+  <path d="M628 74 L628 196 A95 12 0 0 0 818 196 L818 74 Z" fill="url(#dbfill)" class="dbe"/>
+  <ellipse cx="723" cy="74" rx="95" ry="12" fill="url(#dbtop)" class="dbe"/>
+</g>
+<text class="dbh" x="723" y="74" text-anchor="middle" dominant-baseline="central">UI 元素 KB</text>
+<path class="dbd" d="M628 96 A95 12 0 0 0 818 96"/>
+<circle cx="642" cy="112" r="1.8" fill="#1D9E75"/><text class="fw" x="651" y="112" dominant-baseline="central">locator</text>
+<circle cx="642" cy="132" r="1.8" fill="#1D9E75"/><text class="fw" x="651" y="132" dominant-baseline="central">alias</text>
+<circle cx="642" cy="152" r="1.8" fill="#1D9E75"/><text class="fw" x="651" y="152" dominant-baseline="central">behavior / action</text>
+<circle cx="642" cy="172" r="1.8" fill="#1D9E75"/><text class="fw" x="651" y="172" dominant-baseline="central">context</text>
+<circle cx="642" cy="192" r="1.8" fill="#1D9E75"/><text class="fw" x="651" y="192" dominant-baseline="central">指纹 · 健康分</text>
+<text class="dbnote" x="723" y="224" text-anchor="middle">按元素存 · 一次修多 case</text>
+
+<!-- Agent 服务 -->
+<rect class="card" x="306" y="296" width="254" height="270" rx="12"/>
+<text class="tm" x="318" y="314">Agent 服务</text>
+<text class="tss" x="548" y="314" text-anchor="end">同一应用 · 三类能力</text>
+<rect class="hl" x="306" y="296" width="254" height="270" rx="12" style="animation-delay:3.6s"/>
+
+<rect class="lane" x="318" y="326" width="230" height="56" rx="8"/>
+<text class="ts" x="330" y="344" style="font-weight:500">① Smart fill · AI Chat</text>
+<text class="tss" x="330" y="362">step name → 元素候选 + 动作建议</text>
+<text class="tss" x="330" y="376">Chat：检索 case · 生成 DSL patch</text>
+<rect class="badge" x="500" y="333" width="40" height="16" rx="8"/>
+<text class="bt" x="520" y="341" text-anchor="middle" dominant-baseline="central">LLM</text>
+
+<rect class="lane" x="318" y="390" width="230" height="58" rx="8"/>
+<text class="ts" x="330" y="408" style="font-weight:500">② 修复 Fail test case</text>
+<text class="tss" x="330" y="426">证据 + 双库召回 top-8 →</text>
+<text class="tss" x="330" y="440">remap / 建新元素 / 转人工</text>
+<rect class="badge" x="500" y="397" width="40" height="16" rx="8"/>
+<text class="bt" x="520" y="405" text-anchor="middle" dominant-baseline="central">LLM</text>
+
+<rect class="lane" x="318" y="456" width="230" height="88" rx="8"/>
+<text class="ts" x="330" y="474" style="font-weight:500">③ 导入 Import</text>
+<text class="tss" x="330" y="492">元素 DSL → 解析 · 去重 · 对齐</text>
+<text class="tss" x="330" y="508">写库建向量 · 合并 alias</text>
+<text class="tss" x="330" y="524">新建档：补描述 · 定 locator 优先级</text>
+<rect class="badge" x="500" y="463" width="40" height="16" rx="8"/>
+<text class="bt" x="520" y="471" text-anchor="middle" dominant-baseline="central">LLM</text>
+
+<!-- Easy Test Runner -->
+<rect x="32" y="220" width="168" height="60" rx="8" fill="#F2F5F7" stroke="#AFBAC5" stroke-width="0.8"/>
+<text class="tm" x="116" y="242" text-anchor="middle" style="fill:#3D4A55">Easy Test Runner</text>
+<text class="ts" x="116" y="262" text-anchor="middle" style="fill:#6E7C88">Playwright 跑 DSL</text>
+<rect x="32" y="220" width="168" height="60" rx="8" fill="none" stroke="#A7B4C0" stroke-width="1.6" opacity="0" style="animation:hl 13s linear infinite;animation-delay:0s"/>
+
+<!-- 失败现场 -->
+<rect class="box" x="32" y="300" width="168" height="60" rx="8"/>
+<text class="tm" x="116" y="322" text-anchor="middle">失败现场 · 证据包</text>
+<text class="ts" x="116" y="342" text-anchor="middle">截图 · DOM · trace</text>
+<rect class="hl" x="32" y="300" width="168" height="60" rx="8" style="animation-delay:1.2s"/>
+
+<!-- 规则分诊 -->
+<rect class="box" x="32" y="380" width="168" height="76" rx="8"/>
+<text class="tm" x="116" y="400" text-anchor="middle">规则分诊</text>
+<text class="ts" x="116" y="418" text-anchor="middle">五类判定 · 零 LLM</text>
+<rect x="40" y="428" width="152" height="20" rx="5" fill="#FCEBEB" stroke="#D14343" stroke-width="0.7"/>
+<text class="tss" x="116" y="438" text-anchor="middle" dominant-baseline="central" style="fill:#A32D2D">非定位类 → 告警，不进 AI</text>
+<rect class="hl" x="32" y="380" width="168" height="76" rx="8" style="animation-delay:2.4s"/>
+
+<!-- 验证 · Patch -->
+<rect class="box" x="32" y="480" width="168" height="60" rx="8"/>
+<text class="tm" x="116" y="502" text-anchor="middle">候选验证 · Patch</text>
+<text class="ts" x="116" y="522" text-anchor="middle">唯一 · 可见 · 影响面</text>
+<rect class="hl" x="32" y="480" width="168" height="60" rx="8" style="animation-delay:4.8s"/>
+
+<!-- 合入 -->
+<rect x="32" y="556" width="168" height="60" rx="8" fill="#EAF3DE" stroke="#639922" stroke-width="0.8"/>
+<text class="tm" x="116" y="578" text-anchor="middle">回归 · 审批 · 合入</text>
+<text class="ts" x="116" y="598" text-anchor="middle">canary · 版本化可回滚</text>
+<rect class="hl" x="32" y="556" width="168" height="60" rx="8" style="animation-delay:6.0s"/>
+
+<!-- 录制服务 -->
+<rect class="src" x="586" y="460" width="274" height="92" rx="8"/>
+<text class="tm" x="723" y="482" text-anchor="middle">UI 录制服务</text>
+<text class="ts" x="723" y="502" text-anchor="middle">Recording · DOM 解析 · LLM 补上下文</text>
+<text class="ts" x="723" y="520" text-anchor="middle">产出元素 DSL（locator / alias / action / context）</text>
+<text class="tss" x="723" y="538" text-anchor="middle">来源：录制 · case 反向抽取</text>
+
+<!-- 连线 -->
+<g>
+  <path id="pPub" class="fE" d="M280 112 L334 112" marker-end="url(#mE)"/>
+  <path id="pCall" class="fE" d="M280 200 L300 200 L300 354 L304 354" marker-end="url(#mE)"/>
+  <path id="pKb" class="fE" d="M470 212 L470 294" marker-end="url(#mE)" marker-start="url(#mE)"/>
+  <path id="pDec" class="fE" d="M306 436 L272 436 L272 510 L202 510" marker-end="url(#mE)"/>
+  <path id="pRead" class="fB" d="M338 190 L285 190 L285 254 L204 254" marker-end="url(#mB)"/>
+  <path id="pV1" class="fB" d="M116 280 L116 298" marker-end="url(#mB)"/>
+  <path id="pV2" class="fB" d="M116 360 L116 378" marker-end="url(#mB)"/>
+  <path id="pV3" class="fB" d="M116 540 L116 554" marker-end="url(#mB)"/>
+  <path id="pTri" class="fB" d="M200 412 L302 412" marker-end="url(#mB)"/>
+  <path id="pElem" class="fO" d="M628 176 L572 176 L572 420 L562 420" marker-end="url(#mO)" marker-start="url(#mO)"/>
+  <path id="pImp" class="fO" d="M586 500 L562 500" marker-end="url(#mO)"/>
+  <path id="pWb" class="fG" d="M116 616 L116 660 L876 660 L876 40 L433 40 L433 58" marker-end="url(#mG)"/>
+  <path id="pWb2" class="fG" d="M876 190 L820 190" marker-end="url(#mG)"/>
+</g>
+
+<!-- 流动光点 -->
+<g>
+  <circle class="lE" r="2.4"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0s"><mpath xlink:href="#pPub" href="#pPub"/></animateMotion></circle>
+  <circle class="lE" r="2.4"><animateMotion dur="3.4s" repeatCount="indefinite" begin="0.4s"><mpath xlink:href="#pCall" href="#pCall"/></animateMotion></circle>
+  <circle class="lE" r="2.4"><animateMotion dur="2.2s" repeatCount="indefinite" begin="0.2s"><mpath xlink:href="#pKb" href="#pKb"/></animateMotion></circle>
+  <circle class="lE" r="2.4"><animateMotion dur="3s" repeatCount="indefinite" begin="0.6s"><mpath xlink:href="#pDec" href="#pDec"/></animateMotion></circle>
+  <circle class="lB" r="2.4"><animateMotion dur="2.4s" repeatCount="indefinite" begin="0.8s"><mpath xlink:href="#pRead" href="#pRead"/></animateMotion></circle>
+  <circle class="lB" r="2.4"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0s"><mpath xlink:href="#pV1" href="#pV1"/></animateMotion></circle>
+  <circle class="lB" r="2.4"><animateMotion dur="1.8s" repeatCount="indefinite" begin="0.6s"><mpath xlink:href="#pV2" href="#pV2"/></animateMotion></circle>
+  <circle class="lB" r="2.4"><animateMotion dur="2.4s" repeatCount="indefinite" begin="0.3s"><mpath xlink:href="#pTri" href="#pTri"/></animateMotion></circle>
+  <circle class="lB" r="2.4"><animateMotion dur="1.6s" repeatCount="indefinite" begin="0.9s"><mpath xlink:href="#pV3" href="#pV3"/></animateMotion></circle>
+  <circle class="lO" r="2.4"><animateMotion dur="3.2s" repeatCount="indefinite" begin="0.2s"><mpath xlink:href="#pElem" href="#pElem"/></animateMotion></circle>
+  <circle class="lO" r="2.4"><animateMotion dur="2.4s" repeatCount="indefinite" begin="0.7s"><mpath xlink:href="#pImp" href="#pImp"/></animateMotion></circle>
+  <circle class="lG" r="2.6"><animateMotion dur="6s" repeatCount="indefinite" begin="0s"><mpath xlink:href="#pWb" href="#pWb"/></animateMotion></circle>
+</g>
+
+<!-- 标签 -->
+<text class="tss" x="307" y="104" text-anchor="middle" style="fill:#534AB7">发布</text>
+<text class="tss" x="315" y="182" text-anchor="middle" style="fill:#2F7DBF">只读 DSL</text>
+<text class="tss" x="206" y="403" style="fill:#2F7DBF">证据 + 意图</text>
+<text class="tss" x="478" y="240" style="fill:#534AB7">双库检索</text>
+<text class="tss" x="586" y="300" text-anchor="middle" transform="rotate(-90 586 300)" style="fill:#C77A1E">元素召回 · 写入</text>
+<text class="tss" x="700" y="651" text-anchor="middle" style="fill:#2E9E6B">双库原子提交 · 版本号 · 可回滚</text>
+
+<text class="tss" x="306" y="602" style="fill:#8A8981">LLM 只出现在 Agent 这一步：补全 · 召回决策 · 新建档</text>
+<text class="tss" x="306" y="620" style="fill:#8A8981">验证 / Patch / 落库 / 回滚全部为确定性代码，运行期零 LLM</text>
+
+<rect class="amber" x="32" y="700" width="836" height="38" rx="8"/>
+<text class="tm" x="450" y="719" text-anchor="middle" style="font-size:11.5px">治理层：置信度阈值 · 字段白名单（只改 locator / elementRef，断言与步骤语义禁改）· 修复预算 · 误修率监控 · 审计回滚</text>
+
+<text class="cap" x="36" y="762"><tspan style="fill:#534AB7">紫色 = 编辑 / Agent 调用</tspan>　<tspan style="fill:#2F7DBF">蓝色 = 执行与自愈</tspan>　<tspan style="fill:#C77A1E">橙色 = 元素采集</tspan>　<tspan style="fill:#2E9E6B">绿色 = 双库回写</tspan>　<tspan style="fill:#4E8A74">绿色圆柱 = 知识库</tspan></text>
+
+<!-- 下一步改进 -->
+<line x1="32" y1="784" x2="868" y2="784" stroke="#E4E2DA" stroke-width="0.9"/>
+<text class="cap" x="36" y="802" style="font-weight:600;fill:#5F5E5A">下一步改进</text>
+<text class="tss" x="96" y="802" style="fill:#9A9890">不改变现有流程，只增强这三处</text>
+
+<rect x="32" y="812" width="268" height="76" rx="8" fill="#FDF4E6" stroke="#DCBB7A" stroke-width="0.8"/>
+<circle cx="50" cy="830" r="7" fill="#C77A1E"/>
+<text class="tss" x="50" y="830" text-anchor="middle" dominant-baseline="central" style="fill:#FFF;font-weight:600">1</text>
+<text class="ts" x="64" y="834" style="font-weight:500;fill:#8A5F16">UI 录制服务</text>
+<text class="tss" x="44" y="854">录制逻辑引入 LLM 解析 DOM：</text>
+<text class="tss" x="44" y="870">补更多定位信息与上下文，元素更易召回</text>
+
+<rect x="316" y="812" width="268" height="76" rx="8" fill="#F1F7F4" stroke="#8FC7B2" stroke-width="0.8"/>
+<circle cx="334" cy="830" r="7" fill="#2E9E6B"/>
+<text class="tss" x="334" y="830" text-anchor="middle" dominant-baseline="central" style="fill:#FFF;font-weight:600">2</text>
+<text class="ts" x="348" y="834" style="font-weight:500;fill:#12523D">双库设计</text>
+<text class="tss" x="328" y="854">Case 侧留足业务场景语义，元素侧留足 UI 上下文</text>
+<text class="tss" x="328" y="870">两者可双向追溯，修复不丢意图</text>
+
+<rect x="600" y="812" width="268" height="76" rx="8" fill="#F7F6FE" stroke="#CBC7F2" stroke-width="0.8"/>
+<circle cx="618" cy="830" r="7" fill="#6E63D6"/>
+<text class="tss" x="618" y="830" text-anchor="middle" dominant-baseline="central" style="fill:#FFF;font-weight:600">3</text>
+<text class="ts" x="632" y="834" style="font-weight:500;fill:#3A3378">Agent 服务</text>
+<text class="tss" x="612" y="854">补全 / 修复 / 导入共用同一套召回与证据</text>
+<text class="tss" x="612" y="870">逐步扩修复类型：时序、数据、弹窗分支</text>
+</svg>
